@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="nl.usetechnology.cmake.create.category"
+            name="USE Technologies">
+      </category>
+      <wizard
+            canFinishEarly="true"
+            category="nl.usetechnology.cmake.create.category"
+            class="nl.usetechnology.cmake.wizards.CMakeWizard"
+            icon="icons/uil.png"
+            id="nl.usetechnology.cmake.wizard2"
+            name="USE CMake Project"
+            project="true">
+      </wizard>
+   </extension>
+   <extension
+         id="nl.usetechnology.cmake.nature"
+         name="CMake Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="nl.usetechnology.cmake.CMakeNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="nl.usetechnology.cmake.StartupHandler">
+      </startup>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/cmake.png"
+            id="nl.usetechnology.cmake.nature.image"
+            natureId="nl.usetechnology.cmake.nature">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            class="nl.usetechnology.cmake.menus.ProjectExplorerExtensionContributionFactory"
+            locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu">
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            class="nl.usetechnology.cmake.menus.ProjectExplorerExtensionContributionFactory"
+            locationURI="popup:org.eclipse.ui.views.ResourceNavigator">
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="nl.usetechnology.cmake.category"
+            class="nl.usetechnology.cmake.WorkbenchPreferencePage"
+            id="nl.usetechnology.cmake.pathsettings"
+            name="Paths">
+      </page>
+      <page
+            class="nl.usetechnology.cmake.CategoryPage"
+            id="nl.usetechnology.cmake.category"
+            name="CMakeHelper">
+      </page>
+   </extension>
+
+</plugin>

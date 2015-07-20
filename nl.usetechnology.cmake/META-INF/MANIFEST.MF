@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Use Cmake
+Bundle-SymbolicName: nl.usetechnology.cmake;singleton:=true
+Bundle-Version: 1.0.8.qualifier
+Bundle-Activator: nl.usetechnology.cmake.Activator
+Bundle-Vendor: USE Technologies BV.
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.ide,
+ org.eclipse.core.resources,
+ org.eclipse.ui.navigator,
+ org.eclipse.core.expressions,
+ org.eclipse.debug.core,
+ org.eclipse.cdt.core,
+ org.eclipse.ui.console
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
