@@ -9,7 +9,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class WorkbenchPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
-	private DirectoryFieldEditor dirEditor;
+	private DirectoryFieldEditor toolchainsDirEditor;
+	
+	private DirectoryFieldEditor moduleDirEditor;
 
 	public WorkbenchPreferencePage() {
 	}
@@ -27,12 +29,19 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 	@Override
 	protected void createFieldEditors() {
 
-		dirEditor = new DirectoryFieldEditor("CMAKE_PATH", "CMake Environment Path", getFieldEditorParent());
-		dirEditor.setPreferenceName("USE_CMAKE_PATH");
-		dirEditor.load();
-		addField(dirEditor);
+		toolchainsDirEditor = new DirectoryFieldEditor("TOOLCHAINS_PATH", "CMake Toolchains Path", getFieldEditorParent());
+		toolchainsDirEditor.setPreferenceName(Activator.PREF_STORE_TOOLCHAINS_KEY);
+		toolchainsDirEditor.load();
+
+		moduleDirEditor = new DirectoryFieldEditor("MODULE_PATH", "CMake Module Path", getFieldEditorParent());
+		moduleDirEditor.setPreferenceName(Activator.PREF_STORE_MODULES_KEY);
+		moduleDirEditor.load();
 		
-		dirEditor.setPropertyChangeListener(this);
+		addField(toolchainsDirEditor);
+		addField(moduleDirEditor);
+		
+		toolchainsDirEditor.setPropertyChangeListener(this);
+		moduleDirEditor.setPropertyChangeListener(this);
 	}
 	
 	

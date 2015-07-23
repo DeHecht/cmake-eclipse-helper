@@ -56,18 +56,24 @@ public class PluginDataIO {
 	}
 	
 	public static Path getPathToToolchains() {
-		Path dir = getDataDirectory();
-		return dir.resolve("cmake-toolchains").toAbsolutePath();
+		String url = Activator.getDefault().getPreferenceStore().getString(Activator.PREF_STORE_TOOLCHAINS_KEY);
+		if (url == null) {
+			return new File("").toPath();
+		}
+		return new File(url).toPath();
 	}
 	
 	public static Path getPathToModules() {
-		Path dir = getDataDirectory();
-		return dir.resolve("cmake-modules").toAbsolutePath();
+		String url = Activator.getDefault().getPreferenceStore().getString(Activator.PREF_STORE_MODULES_KEY);
+		if (url == null) {
+			return new File("").toPath();
+		}
+		return new File(url).toPath();
 	}
 	
 	public static List<String> getToolchainArchitectures() {
 		Path pathToToolchains = getPathToToolchains();
-		if(pathToToolchains == null) {
+		if(pathToToolchains == null || !pathToToolchains.toFile().exists()) {
 			return Collections.emptyList();
 		}
 		List<String> fileNames = fileList(pathToToolchains);

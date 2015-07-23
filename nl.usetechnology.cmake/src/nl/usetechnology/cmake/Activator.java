@@ -1,7 +1,5 @@
 package nl.usetechnology.cmake;
 
-import java.io.File;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,6 +18,9 @@ public class Activator extends AbstractUIPlugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "nl.usetechnology.cmake"; //$NON-NLS-1$
 
+	public static final String PREF_STORE_TOOLCHAINS_KEY = "USE_CMAKE_TOOLCHAIN_PATH";
+	public static final String PREF_STORE_MODULES_KEY = "USE_CMAKE_MODULE_PATH";
+	
 	// The shared instance
 	private static Activator plugin;
 	

@@ -4,6 +4,7 @@ import nl.usetechnology.cmake.helper.PluginDataIO;
 import nl.usetechnology.cmake.menus.listeners.ArchSelectionListener;
 import nl.usetechnology.cmake.menus.listeners.BuildTypeSelectionListener;
 import nl.usetechnology.cmake.menus.listeners.CleanupCMakeProjectSelectionListener;
+import nl.usetechnology.cmake.menus.listeners.SetupCMakeProjectSelectionListener;
 import nl.usetechnology.cmake.menus.selectors.ArchConfigurationSelector;
 import nl.usetechnology.cmake.menus.selectors.BuildTypeSelector;
 
@@ -25,8 +26,7 @@ public class CMakeContributionMenu extends ContributionItem {
 
 	static {
 		top = new MenuItemBuilder("CMake");
-		top.add(new MenuItemBuilder("Cleanup").setSelectionListener(new CleanupCMakeProjectSelectionListener()));
-
+		top.add(new MenuItemBuilder("Refresh").setSelectionListener(new SetupCMakeProjectSelectionListener()));
 		MenuItemBuilder buildConfigurations = new MenuItemBuilder("Build Configurations");
 		top.add(buildConfigurations);
 
@@ -46,6 +46,7 @@ public class CMakeContributionMenu extends ContributionItem {
 		for(String arch : PluginDataIO.getToolchainArchitectures()) {
 			architectures.add(new MenuItemBuilder(" " + arch).setType(SWT.CHECK).setSelector(archSelector).setSelectionListener(archListener));
 		}
+		top.add(new MenuItemBuilder("Cleanup").setSelectionListener(new CleanupCMakeProjectSelectionListener()));
 	}
 
 	@Override

@@ -63,11 +63,15 @@ public class CMakeLauncher {
 		
 	}
 
-	private static final String GENERATE_ECLIPSE_PROJECT = "-G \"Eclipse CDT4 - Unix Makefiles\" -D_ECLIPSE_VERSION=$VERSION$ -DCMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES=FALSE -DCMAKE_MODULE_PATH=\"$PATH_TO_MODULES$\"";
+	private static final String GENERATE_ECLIPSE_PROJECT = "-G \"Eclipse CDT4 - Unix Makefiles\" -D_ECLIPSE_VERSION=$VERSION$ -DCMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES=FALSE";
+	
+	private static final String SETUP_MODULE_PATH = "-DCMAKE_MODULE_PATH=\"$PATH_TO_MODULES$\"";
 
 	private static final String ARCH_BIN_DIR = PluginDataIO.BIN_DIR + "/$ARCH$";
 	
 	private static final String SETUP_BIN_DIR = "-H. -B"+ARCH_BIN_DIR+" -DCMAKE_TOOLCHAIN_FILE=\"$PATH_TO_TOOLCHAIN_FILE$\"";
+
+	private static final String SETUP_BIN_DIR_NO_TOOLCHAIN = "-H. -B"+ARCH_BIN_DIR+"";
 
 	private static final String CMAKE_BUILD_TYPE = "-DCMAKE_BUILD_TYPE=$BUILDTYPE$";
 
@@ -224,20 +228,30 @@ public class CMakeLauncher {
 		String version = retrieveEclipseVersionString();
 		String modulePath = getModulePath();
 		
-		String parameter = batchReplace(GENERATE_ECLIPSE_PROJECT, new String[]{"VERSION", "PATH_TO_MODULES"},
-				new String[]{version, modulePath});
+		String parameter = batchReplace(GENERATE_ECLIPSE_PROJECT, new String[]{"VERSION"},
+				new String[]{version});
 
 		builder.append(parameter);
+		
+		if (modulePath != null && !modulePath.isEmpty()) {
+			parameter = batchReplace(SETUP_MODULE_PATH, new String[] {"PATH_TO_MODULES"}, new String[] {modulePath});
+			builder.append(parameter);
+		}
 	}
 	
 	private void appendArchitectureVariables(CommandBuilder builder, String architecture) {
-		if(!isToolchainForArchitectureAvailable(architecture)) {
-			System.err.println("FIXME: toolchain for architecture NOT available! (" + architecture +")");
-			return; // FIXME: throw CoreException?
+		if(PluginDataIO.getToolchainArchitectures().size() == 0) {
+			String parameter = batchReplace(SETUP_BIN_DIR_NO_TOOLCHAIN, new String[]{"ARCH"}, new String[]{architecture});
+			builder.append(parameter);
+		} else {
+			if(!isToolchainForArchitectureAvailable(architecture)) {
+				System.err.println("FIXME: toolchain for architecture NOT available! (" + architecture +")");
+				return; // FIXME: throw CoreException?
+			}
+			String parameter = batchReplace(SETUP_BIN_DIR, new String[]{"ARCH", "PATH_TO_TOOLCHAIN_FILE"},
+					new String[]{architecture, getToolchainFilePath(architecture)});
+			builder.append(parameter);
 		}
-		String parameter = batchReplace(SETUP_BIN_DIR, new String[]{"ARCH", "PATH_TO_TOOLCHAIN_FILE"},
-				new String[]{architecture, getToolchainFilePath(architecture)});
-		builder.append(parameter);
 	}
 	
 	private void appendBuildTypeVariables(CommandBuilder builder, String buildType) {
