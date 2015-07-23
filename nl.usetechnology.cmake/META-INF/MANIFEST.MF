@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Use Cmake
+Bundle-Name: USE CMake Plugin
 Bundle-SymbolicName: nl.usetechnology.cmake;singleton:=true
 Bundle-Version: 1.0.8.qualifier
 Bundle-Activator: nl.usetechnology.cmake.Activator

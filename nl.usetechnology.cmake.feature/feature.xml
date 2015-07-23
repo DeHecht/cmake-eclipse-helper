@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="nl.usetechnology.cmake.feature"
-      label="CMake Helper"
+      label="USE CMake Eclipse Support"
       version="1.0.15.qualifier"
       provider-name="USE System Engineering BV">
 
