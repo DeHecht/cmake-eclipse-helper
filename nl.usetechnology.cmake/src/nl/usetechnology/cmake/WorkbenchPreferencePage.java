@@ -1,5 +1,6 @@
 package nl.usetechnology.cmake;
 
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -13,6 +14,8 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 	
 	private DirectoryFieldEditor moduleDirEditor;
 
+	private ComboFieldEditor buildEnvironmentEditor;
+	
 	public WorkbenchPreferencePage() {
 	}
 
@@ -37,11 +40,17 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 		moduleDirEditor.setPreferenceName(Activator.PREF_STORE_MODULES_KEY);
 		moduleDirEditor.load();
 		
+		buildEnvironmentEditor = new ComboFieldEditor("BUILD_SYS", "Build System", new String[][]{{"Make", Activator.PREF_STORE_BUILD_SYS_MAKE_VALUE},{"Ninja", Activator.PREF_STORE_BUILD_SYS_NINJA_VALUE}}, getFieldEditorParent());
+		buildEnvironmentEditor.setPreferenceName(Activator.PREF_STORE_BUILD_SYS);
+		buildEnvironmentEditor.load();
+		
 		addField(toolchainsDirEditor);
 		addField(moduleDirEditor);
+		addField(buildEnvironmentEditor);
 		
 		toolchainsDirEditor.setPropertyChangeListener(this);
 		moduleDirEditor.setPropertyChangeListener(this);
+		buildEnvironmentEditor.setPropertyChangeListener(this);
 	}
 	
 	

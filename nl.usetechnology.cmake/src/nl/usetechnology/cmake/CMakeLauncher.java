@@ -63,7 +63,7 @@ public class CMakeLauncher {
 		
 	}
 
-	private static final String GENERATE_ECLIPSE_PROJECT = "-G \"Eclipse CDT4 - Unix Makefiles\" -D_ECLIPSE_VERSION=$VERSION$ -DCMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES=FALSE";
+	private static final String GENERATE_ECLIPSE_PROJECT = "-G \"$BUILD_SYS$\" -D_ECLIPSE_VERSION=$VERSION$ -DCMAKE_ECLIPSE_GENERATE_LINKED_RESOURCES=FALSE";
 	
 	private static final String SETUP_MODULE_PATH = "-DCMAKE_MODULE_PATH=\"$PATH_TO_MODULES$\"";
 
@@ -228,8 +228,8 @@ public class CMakeLauncher {
 		String version = retrieveEclipseVersionString();
 		String modulePath = getModulePath();
 		
-		String parameter = batchReplace(GENERATE_ECLIPSE_PROJECT, new String[]{"VERSION"},
-				new String[]{version});
+		String parameter = batchReplace(GENERATE_ECLIPSE_PROJECT, new String[]{"BUILD_SYS", "VERSION"},
+				new String[]{Activator.getBuildSystemString(), version});
 
 		builder.append(parameter);
 		

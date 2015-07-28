@@ -23,7 +23,7 @@ public class ProjectSettingsAccessor {
 
 	public static final Pattern projectNamePattern = Pattern.compile(".*<projectDescription>\\s*<name>([^@]+)@([^<]+).*", Pattern.MULTILINE | Pattern.DOTALL);
 
-	public static final Pattern replacePattern = Pattern.compile("(.*<key>org\\.eclipse\\.cdt\\.make\\.core\\.build\\.arguments</key>\\s*<value>)([^<]+)(.*)", Pattern.MULTILINE | Pattern.DOTALL);
+	public static final Pattern replacePattern = Pattern.compile("(.*<key>org\\.eclipse\\.cdt\\.make\\.core\\.build\\.arguments</key>\\s*<value>)([^<]*)(.*)", Pattern.MULTILINE | Pattern.DOTALL);
 
 	public static final Pattern buildTypePattern = Pattern.compile("\\s*CMAKE_BUILD_TYPE:STRING=(.*)");
 
@@ -33,7 +33,7 @@ public class ProjectSettingsAccessor {
 
 			String fileContent = fileContentBuffer.toString();
 			
-			String arch = "USE_ARCH=" + architecture;
+			String arch_path = "-C bin/" + architecture;
 			
 			Matcher m = replacePattern.matcher(fileContent);
 			if(!m.matches()) {
@@ -42,8 +42,8 @@ public class ProjectSettingsAccessor {
 			}
 			
 			// Check if the .project is already correctly updated
-			if (!m.group(2).contains(arch)) {
-				fileContent = m.replaceAll("$1$2 "+arch+"$3");
+			if (!m.group(2).contains(arch_path)) {
+				fileContent = m.replaceAll("$1$2 "+arch_path+"$3");
 				FileContentIO.writeFileContent(dotProjectFile, fileContent, null);
 			}
 		} catch (Exception e) {
