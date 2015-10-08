@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nl.usetechnology.cmake.helper.FileContentIO;
 import nl.usetechnology.cmake.helper.PluginDataIO;
@@ -119,10 +121,16 @@ public class CMakeLauncher {
 			MessageConsoleStream err = myConsole.newMessageStream();
 			
 			out.setColor(black);
-			err.setColor(red);
 			out.println(cmdLine);
 			out.println(outputdataReader.getOutput().toString());
-			err.println(errordataReader.getOutput().toString());
+			
+			String errorOut = errordataReader.getOutput().toString();
+			errorOut = filterErrorOutput(errorOut);
+			if(!errorOut.isEmpty()) {
+				err.setColor(red);
+				err.println(errorOut);
+				Activator.showConsole("CMake Output");
+			}
 			
 			return exitVal == 0;
 		}
@@ -145,7 +153,25 @@ public class CMakeLauncher {
 		};
 		job.schedule();
 	}
+
+	Pattern eclipseWarning = Pattern.compile("(.*)The build directory is a subdirectory.*which is a sibling of the source directory\\.(.*)", Pattern.DOTALL | Pattern.MULTILINE);
 	
+	public String filterErrorOutput(String errorOut) {
+		Matcher m = eclipseWarning.matcher(errorOut);
+		if (m.matches()) {
+			errorOut = m.replaceAll("$1$2");
+		} else {
+			System.err.println("does not match!");
+		}
+		errorOut = errorOut.trim();
+		// No content for warnings anymore? Leave empty!
+		if (errorOut.equals("CMake Warning in CMakeLists.txt:")) {
+			return "";
+		}
+		return errorOut;
+	}
+
+
 	private void doSetupProject(IProject project, IProgressMonitor monitor) throws CoreException, IOException {
 		CommandBuilder builder = new CommandBuilder();
 		appendEclipseProjectSetup(builder);

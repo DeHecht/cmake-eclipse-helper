@@ -110,6 +110,13 @@ public class Activator extends AbstractUIPlugin {
 		conMan.addConsoles(new IConsole[] { myConsole });
 		return myConsole;
 	}
+	
+	public static void showConsole(String name) {
+		MessageConsole console = findConsole(name);
+		ConsolePlugin plugin = ConsolePlugin.getDefault();
+		IConsoleManager conMan = plugin.getConsoleManager();
+		conMan.showConsoleView(console);
+	}
 
 	public static String getBuildSystemString() {
 		return getDefault().getPreferenceStore().getString(PREF_STORE_BUILD_SYS);
