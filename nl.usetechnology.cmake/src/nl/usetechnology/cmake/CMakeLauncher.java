@@ -71,7 +71,7 @@ public class CMakeLauncher {
 
 	private static final String ARCH_BIN_DIR = PluginDataIO.BIN_DIR + "/$ARCH$";
 	
-	private static final String SETUP_BIN_DIR = "-H. -B"+ARCH_BIN_DIR+" -DCMAKE_TOOLCHAIN_FILE=\"$PATH_TO_TOOLCHAIN_FILE$\"";
+	private static final String SETUP_BIN_DIR = "-H. -B" + ARCH_BIN_DIR + " -DCMAKE_TOOLCHAIN_FILE=\"$PATH_TO_TOOLCHAIN_FILE$\" -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=\"-C " + ARCH_BIN_DIR + " $MAKE_ARGS$\"";
 
 	private static final String SETUP_BIN_DIR_NO_TOOLCHAIN = "-H. -B"+ARCH_BIN_DIR+"";
 
@@ -267,15 +267,16 @@ public class CMakeLauncher {
 	
 	private void appendArchitectureVariables(CommandBuilder builder, String architecture) {
 		if(PluginDataIO.getToolchainArchitectures().size() == 0) {
-			String parameter = batchReplace(SETUP_BIN_DIR_NO_TOOLCHAIN, new String[]{"ARCH"}, new String[]{architecture});
+			String parameter = batchReplace(SETUP_BIN_DIR_NO_TOOLCHAIN, new String[]{"ARCH", "MAKE_ARGS"}
+			, new String[]{architecture, Activator.getMakeArgs()});
 			builder.append(parameter);
 		} else {
 			if(!isToolchainForArchitectureAvailable(architecture)) {
 				System.err.println("FIXME: toolchain for architecture NOT available! (" + architecture +")");
 				return; // FIXME: throw CoreException?
 			}
-			String parameter = batchReplace(SETUP_BIN_DIR, new String[]{"ARCH", "PATH_TO_TOOLCHAIN_FILE"},
-					new String[]{architecture, getToolchainFilePath(architecture)});
+			String parameter = batchReplace(SETUP_BIN_DIR, new String[]{"ARCH", "PATH_TO_TOOLCHAIN_FILE", "MAKE_ARGS"},
+					new String[]{architecture, getToolchainFilePath(architecture), Activator.getMakeArgs()});
 			builder.append(parameter);
 		}
 	}
@@ -337,9 +338,9 @@ public class CMakeLauncher {
 			} else {
 				copyFile(sourceFile, destinationFile);
 			}
-			if(fileName == fileNamesToCopy[0]) {
-				ProjectSettingsAccessor.modifySettings(destinationFile, architecture);
-			}
+//			if(fileName == fileNamesToCopy[0]) {
+//				ProjectSettingsAccessor.modifySettings(destinationFile, architecture);
+//			}
 
 		}
 		ProjectSettingsAccessor.removeAbsoluteProjectPath(project);

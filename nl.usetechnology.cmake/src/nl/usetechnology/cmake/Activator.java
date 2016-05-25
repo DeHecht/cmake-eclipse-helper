@@ -21,10 +21,11 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_TOOLCHAINS_KEY = "USE_CMAKE_TOOLCHAIN_PATH";
 	public static final String PREF_STORE_MODULES_KEY = "USE_CMAKE_MODULE_PATH";
 	public static final String PREF_STORE_BUILD_SYS = "USE_CMAKE_BUILD_SYSTEM";
+	public static final String PREF_STORE_MAKE_ARGS = "USE_CMAKE_MAKE_ARGS";
 	
 	public static final String PREF_STORE_BUILD_SYS_MAKE_VALUE = "Eclipse CDT4 - Unix Makefiles";
 	public static final String PREF_STORE_BUILD_SYS_NINJA_VALUE = "Eclipse CDT4 - Ninja";
-
+	public static final String PREF_STORE_MAKE_ARGS_DEFAULT = "-j4";
 	
 	// The shared instance
 	private static Activator plugin;
@@ -34,6 +35,7 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public Activator() {
 		getPreferenceStore().setDefault(PREF_STORE_BUILD_SYS, PREF_STORE_BUILD_SYS_MAKE_VALUE);
+		getPreferenceStore().setDefault(PREF_STORE_MAKE_ARGS, PREF_STORE_MAKE_ARGS_DEFAULT);
 	}
 
 	/*
@@ -121,5 +123,9 @@ public class Activator extends AbstractUIPlugin {
 	public static String getBuildSystemString() {
 		return getDefault().getPreferenceStore().getString(PREF_STORE_BUILD_SYS);
 	}
-	
+
+	public static String getMakeArgs() {
+		return getDefault().getPreferenceStore().getString(PREF_STORE_MAKE_ARGS);
+	}
+
 }

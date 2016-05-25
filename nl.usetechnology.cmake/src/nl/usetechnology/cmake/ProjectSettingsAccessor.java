@@ -8,16 +8,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.management.monitor.Monitor;
-
-import nl.usetechnology.cmake.helper.FileContentIO;
-import nl.usetechnology.cmake.helper.PluginDataIO;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
+
+import nl.usetechnology.cmake.helper.FileContentIO;
+import nl.usetechnology.cmake.helper.PluginDataIO;
 
 public class ProjectSettingsAccessor {
 
