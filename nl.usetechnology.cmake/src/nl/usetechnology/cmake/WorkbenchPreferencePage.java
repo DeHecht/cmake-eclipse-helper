@@ -1,10 +1,8 @@
 package nl.usetechnology.cmake;
 
-import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -15,10 +13,6 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 	
 	private DirectoryFieldEditor moduleDirEditor;
 
-	private ComboFieldEditor buildEnvironmentEditor;
-	
-	private StringFieldEditor makeArgsEditor;
-	
 	public WorkbenchPreferencePage() {
 	}
 
@@ -28,7 +22,6 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 
 	@Override
 	public void init(IWorkbench workbench) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -43,23 +36,11 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 		moduleDirEditor.setPreferenceName(Activator.PREF_STORE_MODULES_KEY);
 		moduleDirEditor.load();
 		
-		buildEnvironmentEditor = new ComboFieldEditor("BUILD_SYS", "Build System", new String[][]{{"Make", Activator.PREF_STORE_BUILD_SYS_MAKE_VALUE},{"Ninja", Activator.PREF_STORE_BUILD_SYS_NINJA_VALUE}}, getFieldEditorParent());
-		buildEnvironmentEditor.setPreferenceName(Activator.PREF_STORE_BUILD_SYS);
-		buildEnvironmentEditor.load();
-		
-		makeArgsEditor = new StringFieldEditor("MAKE_ARGS", "Make/Ninja Args", getFieldEditorParent());
-		makeArgsEditor.setPreferenceName(Activator.PREF_STORE_MAKE_ARGS);
-		makeArgsEditor.load();
-		
 		addField(toolchainsDirEditor);
 		addField(moduleDirEditor);
-		addField(buildEnvironmentEditor);
-		addField(makeArgsEditor);
 		
 		toolchainsDirEditor.setPropertyChangeListener(this);
 		moduleDirEditor.setPropertyChangeListener(this);
-		buildEnvironmentEditor.setPropertyChangeListener(this);
-		makeArgsEditor.setPropertyChangeListener(this);
 	}
 	
 	

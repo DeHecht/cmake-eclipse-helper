@@ -177,6 +177,7 @@ public class CMakeLauncher {
 		appendEclipseProjectSetup(builder);
 		appendArchitectureVariables(builder, ProjectSettingsAccessor.retrieveArchitecture(project));
 		appendBuildTypeVariables(builder, ProjectSettingsAccessor.retrieveBuildType(project));
+		builder.append(Activator.getCmakeArgs());
 		builder.execute(project);
 		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		// now relink symbolic links
