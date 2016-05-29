@@ -1,12 +1,9 @@
 package nl.usetechnology.cmake;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import nl.usetechnology.cmake.helper.FileContentIO;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -111,11 +108,9 @@ public class CMakeNature implements IProjectNature {
 		}
 	}
 	
-	private static List<String> derivedDirectories = Collections
-			.unmodifiableList(Arrays.asList("bin", "build", "[Targets]",
-					"[Subprojects]"));
+	private static List<String> derivedDirectories = Collections.unmodifiableList(Arrays.asList("bin", "build", "[Targets]", "[Subprojects]"));
 	
-	private static List<String> derivedFiles = Collections.unmodifiableList(Arrays.asList(".cproject"));
+	private static List<String> derivedFiles = Collections.unmodifiableList(Arrays.asList(".project", ".cproject"));
 	
 	public static void scheduleIntegrityCheck(final IProject project) {
 		

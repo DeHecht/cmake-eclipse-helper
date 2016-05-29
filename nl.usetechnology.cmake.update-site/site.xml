@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/nl.usetechnology.cmake.feature_1.0.13.201507171059.jar" id="nl.usetechnology.cmake.feature" version="1.0.13.201507171059">
+   <feature url="features/nl.usetechnology.cmake.feature_1.0.17.201605262306.jar" id="nl.usetechnology.cmake.feature" version="1.0.17.201605262306">
+      <category name="nl.usetechnology.cmake.category"/>
+   </feature>
+   <feature url="features/nl.usetechnology.cmake.feature_1.0.18.201605291439.jar" id="nl.usetechnology.cmake.feature" version="1.0.18.201605291439">
       <category name="nl.usetechnology.cmake.category"/>
    </feature>
    <category-def name="nl.usetechnology.cmake.category" label="USE CMake Eclipse Support"/>

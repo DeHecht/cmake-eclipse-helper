@@ -73,7 +73,7 @@ public class CMakeLauncher {
 	
 	private static final String SETUP_BIN_DIR = "-H. -B" + ARCH_BIN_DIR + " -DCMAKE_TOOLCHAIN_FILE=\"$PATH_TO_TOOLCHAIN_FILE$\" -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=\"-C " + ARCH_BIN_DIR + " $MAKE_ARGS$\"";
 
-	private static final String SETUP_BIN_DIR_NO_TOOLCHAIN = "-H. -B"+ARCH_BIN_DIR+"";
+	private static final String SETUP_BIN_DIR_NO_TOOLCHAIN = "-H. -B"+ARCH_BIN_DIR+" -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=\"-C " + ARCH_BIN_DIR + " $MAKE_ARGS$\"";
 
 	private static final String CMAKE_BUILD_TYPE = "-DCMAKE_BUILD_TYPE=$BUILDTYPE$";
 
@@ -99,9 +99,16 @@ public class CMakeLauncher {
 			File projectLocation = project.getLocation().makeAbsolute().toFile();
 			
 			Runtime runtime = Runtime.getRuntime();
-			String cmdLine = sb.toString();
 			
-			Process process = runtime.exec(new String[]{"bash", "-c", cmdLine}, null, projectLocation);
+			String cmdLine = sb.toString();
+			Process process = null;
+			if (Platform.getOS().equals(Platform.OS_WIN32)) {
+				process = runtime.exec(new String[]{"cmd", "/C", cmdLine}, null, projectLocation);
+			} else {
+				System.out.println(cmdLine);
+				process = runtime.exec(new String[]{"sh", "-c", cmdLine}, null, projectLocation);
+			}
+			
 			int exitVal = -1;
 			StreamGobbler errordataReader = new StreamGobbler(process.getErrorStream());
 			StreamGobbler outputdataReader = new StreamGobbler(process.getInputStream());
@@ -129,8 +136,8 @@ public class CMakeLauncher {
 			if(!errorOut.isEmpty()) {
 				err.setColor(red);
 				err.println(errorOut);
-				Activator.showConsole("CMake Output");
 			}
+			Activator.showConsole("CMake Output");
 			
 			return exitVal == 0;
 		}
@@ -175,7 +182,7 @@ public class CMakeLauncher {
 	private void doSetupProject(IProject project, IProgressMonitor monitor) throws CoreException, IOException {
 		CommandBuilder builder = new CommandBuilder();
 		appendEclipseProjectSetup(builder);
-		appendArchitectureVariables(builder, ProjectSettingsAccessor.retrieveArchitecture(project));
+		appendArchitectureVariables(builder, ProjectSettingsAccessor.retrieveToolchain(project));
 		appendBuildTypeVariables(builder, ProjectSettingsAccessor.retrieveBuildType(project));
 		builder.append(Activator.getCmakeArgs());
 		builder.execute(project);
@@ -233,7 +240,7 @@ public class CMakeLauncher {
 	private void doChangeBuildType(IProject project, String buildType, IProgressMonitor monitor) throws CoreException, IOException {
 		CommandBuilder builder = new CommandBuilder();
 		appendEclipseProjectSetup(builder);
-		appendArchitectureVariables(builder, ProjectSettingsAccessor.retrieveArchitecture(project));
+		appendArchitectureVariables(builder, ProjectSettingsAccessor.retrieveToolchain(project));
 		appendBuildTypeVariables(builder, buildType);
 		builder.execute(project);
 	}
@@ -288,7 +295,7 @@ public class CMakeLauncher {
 	}
 
 	private void copyProjectFiles(IProject project) {
-		copyProjectFiles(project, ProjectSettingsAccessor.retrieveArchitecture(project));
+		copyProjectFiles(project, ProjectSettingsAccessor.retrieveToolchain(project));
 	}
 
 	
@@ -339,10 +346,6 @@ public class CMakeLauncher {
 			} else {
 				copyFile(sourceFile, destinationFile);
 			}
-//			if(fileName == fileNamesToCopy[0]) {
-//				ProjectSettingsAccessor.modifySettings(destinationFile, architecture);
-//			}
-
 		}
 		ProjectSettingsAccessor.removeAbsoluteProjectPath(project);
 		// CMakeNature may have to be registered again after copy

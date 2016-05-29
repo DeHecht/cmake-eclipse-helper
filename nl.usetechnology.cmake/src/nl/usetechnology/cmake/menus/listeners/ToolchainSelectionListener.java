@@ -8,7 +8,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.MenuItem;
 
-public class ArchSelectionListener extends SelectionAdapter {
+public class ToolchainSelectionListener extends SelectionAdapter {
 	
 	CMakeLauncher launcher = new CMakeLauncher();
 

@@ -1,28 +1,39 @@
-# USE CMake Eclipse Support
+# CMake Eclipse Helper
 
-This eclipse plugin helps C/C++ developers setting up their CMake-based projects within eclipse. Additionally, it helps the developer to switch between different architectures within a single eclipse project scope.
+The CMake Eclipse Helper is a simplistic plugin that tries to help the user through the rough edges of setting up their CMake-based projects within eclipse for cross-compiling.
 
-The plugin does only wrap calls to the cmake executable and does not try to interpret the content of the CMakeLists.txt files itself. For that reason it could also work for projects that are not intentionally setup for development with eclipse-cdt.
-
-## Requirements
-
- * CMake - http://www.cmake.org/cmake/resources/software.html
- * Eclipse with CDT installed - http://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/lunar
- * (Optional) CMake Editor - http://cmakeed.sourceforge.net/
+Internally, it is using CMakes "Eclipse Generator". So your projects do not have to meet any other prerequisites other than having a CMakeLists.txt in the projects root. Just call "CMake"->"Setup" and you can build the project (this even works, if the project wasn't a CDT-Project before).
 
 ## Features
 
- * Support for adding/removing source files and updating the GLOBs. (By automatically touching the CMakeLists.txt file).
- * Context menu to switch the Build Type (Debug, Release, etc.)
+ * Context menu to switch the Build Type (Debug, Release, RelWithDebugInfo, etc.)
  * Context menu to switch the Toolchain (Own toolchains can be added)
+ * Support for adding/removing source files and updating the GLOBs. (By automatically touching the CMakeLists.txt file).
+ * It provides simple context menus for your project to run the cmake generator and to tag "generated" files (like the .project and .cproject) so you won't accidently spam your version control system with changes on these files.
 
 ## How to install?
 
-Currently we do not host an update site our own. But the "update-site" project
-is available within this git repository.
+Our eclipse update-site is available at: http://www.cmake-helper.eu/releases/1.0
+
+## How to define toolchains?
+
+You require to configure the path of the directory, where the toolchain files are stored. The pattern, the parser uses is the following: toolchain.<name>.cmake
+
+The "name" will be picked up by the toolchain context menu. 
 
 ## How to use the plugin?
 
-We are currently preparing a Getting Started Guide.
+All you need is a project with a CMakeLists.txt file in the projects root.
 
-Basically all you need is an eclipse project that contains a "CMakeLists.txt" file and chose "CMake"->"Setup" in the context menu. Then you should be able to build the project using CDT.
+1. Right-click your project
+2. Chose "CMake"->"Setup" in the context menu
+3. Build your project
+
+In case your CMakeLists.txt does not contain any syntax errors thats all you need to do.
+
+If you have a arm toolchain file and you want to switch from x86_64 to the arm toolchain this is the way to go.
+1. Right-click your project
+2. Chose "CMake" -> "Toolchains" -> <name-of-your-arm-toolchain>
+3. Build your project
+
+You will find your binaries in the "bin/<name-of-your-arm-toolchain>" directory (in case you did not specify a different output directory within your CMakeLists.txt).

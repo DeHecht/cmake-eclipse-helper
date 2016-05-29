@@ -1,5 +1,10 @@
 package nl.usetechnology.cmake;
 
+import java.util.List;
+
+import nl.usetechnology.cmake.helper.PluginDataIO;
+
+import org.eclipse.cdt.utils.Platform;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -16,6 +21,7 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 
 	private StringFieldEditor cmakeArgsEditor;
 	
+	private ComboFieldEditor defaultToolchain;
 
 	public CategoryPage() {
 	}
@@ -42,13 +48,29 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 		cmakeArgsEditor.setPreferenceName(Activator.PREF_STORE_CMAKE_ARGS);
 		cmakeArgsEditor.load();
 
+		String[][] entryNamesAndValues = { { "Toolchain path invalid or not set.", Platform.getOSArch() } };
+		List<String> toolchains = PluginDataIO.getToolchainArchitectures();
+		if (!toolchains.isEmpty()) {
+			int index = 0;
+			entryNamesAndValues = new String[toolchains.size()][2];
+			for (String toolchain : toolchains) {
+				entryNamesAndValues[index++] = new String[]{toolchain, toolchain};
+			}
+		}
+		
+		defaultToolchain = new ComboFieldEditor("DEF_TOOLCHAIN", "Default-Toolchain", entryNamesAndValues, getFieldEditorParent());
+		defaultToolchain.setPreferenceName(Activator.PREF_STORE_DEFAULT_TOOLCHAIN);
+		defaultToolchain.load();
+		
 		addField(buildEnvironmentEditor);
 		addField(makeArgsEditor);
 		addField(cmakeArgsEditor);
+		addField(defaultToolchain);
 
 		buildEnvironmentEditor.setPropertyChangeListener(this);
 		makeArgsEditor.setPropertyChangeListener(this);
 		cmakeArgsEditor.setPropertyChangeListener(this);
+		defaultToolchain.setPropertyChangeListener(this);
 	}
 
 	@Override

@@ -2,7 +2,7 @@
 <feature
       id="nl.usetechnology.cmake.feature"
       label="USE CMake Eclipse Support"
-      version="1.0.15.qualifier"
+      version="1.0.18.qualifier"
       provider-name="USE System Engineering BV">
 
    <description url="https://github.com/USESystemEngineeringBV/cmake-eclipse-helper">

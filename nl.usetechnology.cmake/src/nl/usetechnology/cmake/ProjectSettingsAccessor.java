@@ -8,14 +8,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nl.usetechnology.cmake.helper.PluginDataIO;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Platform;
-
-import nl.usetechnology.cmake.helper.FileContentIO;
-import nl.usetechnology.cmake.helper.PluginDataIO;
 
 public class ProjectSettingsAccessor {
 
@@ -25,31 +23,7 @@ public class ProjectSettingsAccessor {
 
 	public static final Pattern buildTypePattern = Pattern.compile("\\s*CMAKE_BUILD_TYPE:STRING=(.*)");
 
-	public static void modifySettings(IFile dotProjectFile, String architecture) {
-		try {
-			CharSequence fileContentBuffer = FileContentIO.readFileContent(dotProjectFile);
-
-			String fileContent = fileContentBuffer.toString();
-			
-			String arch_path = "-C bin/" + architecture;
-			
-			Matcher m = replacePattern.matcher(fileContent);
-			if(!m.matches()) {
-				System.err.println("Unable to find entry point to set make flags!");
-				return;
-			}
-			
-			// Check if the .project is already correctly updated
-			if (!m.group(2).contains(arch_path)) {
-				fileContent = m.replaceAll("$1$2 "+arch_path+"$3");
-				FileContentIO.writeFileContent(dotProjectFile, fileContent, null);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static String retrieveArchitecture(IProject project) {
+	public static String retrieveToolchain(IProject project) {
 		try {
 			String projectName = project.getDescription().getName();
 			int atIndex = projectName.indexOf('@');
@@ -59,7 +33,18 @@ public class ProjectSettingsAccessor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return Platform.getOSArch();
+		
+		List<String> toolchains = PluginDataIO.getToolchainArchitectures();
+
+		// Check if the default toolchain is still available!
+		if (toolchains.contains(Activator.getDefaultToolchain())) {
+			return Activator.getDefaultToolchain();
+		}
+		
+		if (!toolchains.isEmpty()) {
+			return toolchains.get(0);
+		}
+		return Activator.getDefaultToolchain();
 	}
 
 	public static IFile getFileFromProject(IProject project, String... entries) {
@@ -74,7 +59,7 @@ public class ProjectSettingsAccessor {
 		List<String> validBuildTypes = PluginDataIO.getBuildTypes();
 		String buildType = validBuildTypes.get(0); // Initialize with "valid" type
 		
-		String architecture = retrieveArchitecture(project);
+		String architecture = retrieveToolchain(project);
 		IFile cacheFile = getFileFromProject(project, PluginDataIO.BIN_DIR, architecture, "CMakeCache.txt");
 		try {
 			InputStream is = cacheFile.getContents(true);
