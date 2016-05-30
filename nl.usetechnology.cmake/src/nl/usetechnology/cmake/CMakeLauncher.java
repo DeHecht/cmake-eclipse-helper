@@ -69,7 +69,7 @@ public class CMakeLauncher {
 	
 	private static final String SETUP_MODULE_PATH = "-DCMAKE_MODULE_PATH=\"$PATH_TO_MODULES$\"";
 
-	private static final String ARCH_BIN_DIR = PluginDataIO.BIN_DIR + "/$ARCH$";
+	private static final String ARCH_BIN_DIR = PluginDataIO.BIN_DIR + File.separator + "$ARCH$";
 	
 	private static final String SETUP_BIN_DIR = "-H. -B" + ARCH_BIN_DIR + " -DCMAKE_TOOLCHAIN_FILE=\"$PATH_TO_TOOLCHAIN_FILE$\" -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=\"-C " + ARCH_BIN_DIR + " $MAKE_ARGS$\"";
 
