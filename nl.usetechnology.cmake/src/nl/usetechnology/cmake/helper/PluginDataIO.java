@@ -22,7 +22,7 @@ public class PluginDataIO {
 	public final static String BIN_DIR = "bin";
 	//public static Path DATA_DIRECTORY;
 
-	public static Pattern toolchainPattern = Pattern.compile("toolchain\\.([^.]+)\\.cmake", Pattern.CASE_INSENSITIVE);
+	public static Pattern toolchainPattern = Pattern.compile("toolchain\\.(.+)\\.cmake", Pattern.CASE_INSENSITIVE);
 	
     public static List<String> fileList(Path directory) {
         List<String> fileNames = new ArrayList<>();
@@ -84,6 +84,7 @@ public class PluginDataIO {
 				results.add(m.group(1));
 			}
 		}
+		Collections.sort(results);
 		
 		return results;
 	}
