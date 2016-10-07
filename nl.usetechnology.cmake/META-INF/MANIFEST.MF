@@ -5,14 +5,15 @@ Bundle-SymbolicName: nl.usetechnology.cmake;singleton:=true
 Bundle-Version: 1.0.8.qualifier
 Bundle-Activator: nl.usetechnology.cmake.Activator
 Bundle-Vendor: USE Technologies BV.
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.ui.ide,
+Require-Bundle: org.eclipse.core.expressions,
  org.eclipse.core.resources,
- org.eclipse.ui.navigator,
- org.eclipse.core.expressions,
+ org.eclipse.core.runtime,
  org.eclipse.debug.core,
+ org.eclipse.ui,
+ org.eclipse.ui.console,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.navigator,
  org.eclipse.cdt.core,
- org.eclipse.ui.console
+ org.apache.commons.compress;bundle-version="1.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

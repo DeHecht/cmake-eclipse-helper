@@ -3,8 +3,6 @@ package nl.usetechnology.cmake.event;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.usetechnology.cmake.CMakeNature;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -13,6 +11,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+
+import nl.usetechnology.cmake.CMakeNature;
 
 public class DerivedDeltaVisitor extends AbstractCMakeResourceDeltaVisitor {
 	private List<IResource> listToDerive = new LinkedList<IResource>();

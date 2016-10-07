@@ -2,16 +2,16 @@ package nl.usetechnology.cmake.menus;
 
 import java.util.List;
 
-import nl.usetechnology.cmake.helper.PluginDataIO;
-import nl.usetechnology.cmake.menus.listeners.ToolchainSelectionListener;
-import nl.usetechnology.cmake.menus.listeners.BuildTypeSelectionListener;
-import nl.usetechnology.cmake.menus.listeners.SetupCMakeProjectSelectionListener;
-import nl.usetechnology.cmake.menus.selectors.ToolchainConfigurationSelector;
-import nl.usetechnology.cmake.menus.selectors.BuildTypeSelector;
-
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
+
+import nl.usetechnology.cmake.helper.PluginDataIO;
+import nl.usetechnology.cmake.menus.listeners.BuildTypeSelectionListener;
+import nl.usetechnology.cmake.menus.listeners.SetupCMakeProjectSelectionListener;
+import nl.usetechnology.cmake.menus.listeners.ToolchainSelectionListener;
+import nl.usetechnology.cmake.menus.selectors.BuildTypeSelector;
+import nl.usetechnology.cmake.menus.selectors.ToolchainConfigurationSelector;
 
 public class CMakeContributionMenu extends ContributionItem {
 

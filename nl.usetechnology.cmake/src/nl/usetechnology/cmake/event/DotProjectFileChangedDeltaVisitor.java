@@ -1,13 +1,13 @@
 package nl.usetechnology.cmake.event;
 
-import nl.usetechnology.cmake.CMakeLauncher;
-import nl.usetechnology.cmake.CMakeNature;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
+
+import nl.usetechnology.cmake.CMakeLauncher;
+import nl.usetechnology.cmake.CMakeNature;
 
 public class DotProjectFileChangedDeltaVisitor extends
 		AbstractCMakeResourceDeltaVisitor {

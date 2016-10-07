@@ -6,17 +6,16 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.usetechnology.cmake.Activator;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+
+import nl.usetechnology.cmake.Activator;
 
 public class PluginDataIO {
 	public final static String BIN_DIR = "bin";
@@ -90,10 +89,7 @@ public class PluginDataIO {
 	}
 	
 	public static List<String> getBuildTypes() {
-		// FIXME: Add something like the toolchains, that adds own build
-		// type configurations to the system, for now only the standard types
-		// are possible
-		return Arrays.asList("Debug", "Release", "RelWithDebugInfo", "MinSizeRel");
+		return Activator.getBuildConfigurations();
 	}
 	
 	public static Path getToolchainPathForArchitecture(String architecture) {

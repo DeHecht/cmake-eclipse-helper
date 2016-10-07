@@ -1,7 +1,5 @@
 package nl.usetechnology.cmake.menus;
 
-import nl.usetechnology.cmake.CMakeNature;
-
 import org.eclipse.cdt.core.model.ICElement;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -12,6 +10,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.menus.ExtensionContributionFactory;
 import org.eclipse.ui.menus.IContributionRoot;
 import org.eclipse.ui.services.IServiceLocator;
+
+import nl.usetechnology.cmake.CMakeNature;
 
 
 public class ProjectExplorerExtensionContributionFactory extends

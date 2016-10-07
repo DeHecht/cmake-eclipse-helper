@@ -1,9 +1,5 @@
 package nl.usetechnology.cmake.menus.listeners;
 
-import nl.usetechnology.cmake.CMakeNature;
-import nl.usetechnology.cmake.helper.PluginDataIO;
-import nl.usetechnology.cmake.menus.ProjectExplorerExtensionContributionFactory;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -11,6 +7,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+
+import nl.usetechnology.cmake.CMakeNature;
+import nl.usetechnology.cmake.helper.PluginDataIO;
+import nl.usetechnology.cmake.menus.ProjectExplorerExtensionContributionFactory;
 
 public class CleanupCMakeProjectSelectionListener extends SelectionAdapter {
 

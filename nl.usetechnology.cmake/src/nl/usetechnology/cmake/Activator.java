@@ -1,5 +1,9 @@
 package nl.usetechnology.cmake;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,16 +24,19 @@ public class Activator extends AbstractUIPlugin {
 
 	public static final String PREF_STORE_TOOLCHAINS_KEY = "USE_CMAKE_TOOLCHAIN_PATH";
 	public static final String PREF_STORE_MODULES_KEY = "USE_CMAKE_MODULE_PATH";
+	public static final String PREF_STORE_TEMPLATES_KEY = "USE_CMAKE_TEMPLATES_PATH";
 	public static final String PREF_STORE_BUILD_SYS = "USE_CMAKE_BUILD_SYSTEM";
 	public static final String PREF_STORE_MAKE_ARGS = "USE_CMAKE_MAKE_ARGS";
 	public static final String PREF_STORE_CMAKE_ARGS = "USE_CMAKE_CMAKE_ARGS";
 	public static final String PREF_STORE_DEFAULT_TOOLCHAIN = "USE_CMAKE_DEFAULT_TC";
+	public static final String PREF_STORE_BUILD_CONF = "USE_CMAKE_BUILD_CONFIG";
 	
 	public static final String PREF_STORE_BUILD_SYS_MAKE_VALUE = "Eclipse CDT4 - Unix Makefiles";
 	public static final String PREF_STORE_BUILD_SYS_NINJA_VALUE = "Eclipse CDT4 - Ninja";
 	public static final String PREF_STORE_MAKE_ARGS_DEFAULT = "-j" + Runtime.getRuntime().availableProcessors();
 	public static final String PREF_STORE_CMAKE_ARGS_DEFAULT = "";
-	
+	public static final String PREF_STORE_BUILD_CONF_DEFAULT = "Debug;Release;RelWithDebugInfo;MinSizeRel";
+		
 	// The shared instance
 	private static Activator plugin;
 	
@@ -40,6 +47,7 @@ public class Activator extends AbstractUIPlugin {
 		getPreferenceStore().setDefault(PREF_STORE_BUILD_SYS, PREF_STORE_BUILD_SYS_MAKE_VALUE);
 		getPreferenceStore().setDefault(PREF_STORE_MAKE_ARGS, PREF_STORE_MAKE_ARGS_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_CMAKE_ARGS, PREF_STORE_CMAKE_ARGS_DEFAULT);
+		getPreferenceStore().setDefault(PREF_STORE_BUILD_CONF, PREF_STORE_BUILD_CONF_DEFAULT);
 	}
 
 	/*
@@ -139,4 +147,9 @@ public class Activator extends AbstractUIPlugin {
 	public static String getDefaultToolchain() {
 		return getDefault().getPreferenceStore().getString(PREF_STORE_DEFAULT_TOOLCHAIN);
 	}
+	
+	public static List<String> getBuildConfigurations() {
+		return Arrays.asList(getDefault().getPreferenceStore().getString(PREF_STORE_BUILD_CONF).split(File.pathSeparator));
+	}
+	
 }

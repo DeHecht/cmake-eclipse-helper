@@ -1,12 +1,12 @@
 package nl.usetechnology.cmake.menus.listeners;
 
-import nl.usetechnology.cmake.CMakeLauncher;
-import nl.usetechnology.cmake.menus.ProjectExplorerExtensionContributionFactory;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.MenuItem;
+
+import nl.usetechnology.cmake.CMakeLauncher;
+import nl.usetechnology.cmake.menus.ProjectExplorerExtensionContributionFactory;
 
 public class BuildTypeSelectionListener extends SelectionAdapter {
 

@@ -1,16 +1,19 @@
 package nl.usetechnology.cmake;
 
+import java.io.File;
 import java.util.List;
 
-import nl.usetechnology.cmake.helper.PluginDataIO;
-
 import org.eclipse.cdt.utils.Platform;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import nl.usetechnology.cmake.helper.PluginDataIO;
 
 public class CategoryPage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
@@ -23,6 +26,8 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 	
 	private ComboFieldEditor defaultToolchain;
 
+	private ListEditor defaultBuildtypes;
+	
 	public CategoryPage() {
 	}
 
@@ -62,15 +67,45 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 		defaultToolchain.setPreferenceName(Activator.PREF_STORE_DEFAULT_TOOLCHAIN);
 		defaultToolchain.load();
 		
+		defaultBuildtypes = new ListEditor("DEF_BUILDTYPES", "Available Buildtypes", getFieldEditorParent()) {
+			
+			@Override
+			protected String[] parseString(String stringList) {
+				return stringList.split(File.pathSeparator);
+			}
+			
+			@Override
+			protected String getNewInputObject() {
+				InputDialog dialog = new InputDialog(getShell(), "New Buildconfiguration", "Enter the name of the Buildconfiguration to add", "", null);
+				if (dialog.open() == InputDialog.OK) {
+					return dialog.getValue();
+				}
+				return null;
+			}
+			
+			@Override
+			protected String createList(String[] items) {
+				StringBuilder sb = new StringBuilder();
+				for (String string : items) {
+					sb.append(string).append(File.pathSeparator);
+				}
+				return sb.toString();
+			}
+		};
+		defaultBuildtypes.setPreferenceName(Activator.PREF_STORE_BUILD_CONF);
+		defaultBuildtypes.load();
+		
 		addField(buildEnvironmentEditor);
 		addField(makeArgsEditor);
 		addField(cmakeArgsEditor);
 		addField(defaultToolchain);
+		addField(defaultBuildtypes);
 
 		buildEnvironmentEditor.setPropertyChangeListener(this);
 		makeArgsEditor.setPropertyChangeListener(this);
 		cmakeArgsEditor.setPropertyChangeListener(this);
 		defaultToolchain.setPropertyChangeListener(this);
+		defaultBuildtypes.setPropertyChangeListener(this);
 	}
 
 	@Override

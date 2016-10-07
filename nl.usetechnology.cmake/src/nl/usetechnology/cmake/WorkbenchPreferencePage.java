@@ -13,6 +13,8 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 	
 	private DirectoryFieldEditor moduleDirEditor;
 
+	private DirectoryFieldEditor templateDirEditor;
+
 	public WorkbenchPreferencePage() {
 	}
 
@@ -36,11 +38,17 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 		moduleDirEditor.setPreferenceName(Activator.PREF_STORE_MODULES_KEY);
 		moduleDirEditor.load();
 		
+		templateDirEditor = new DirectoryFieldEditor("TEMPLATES_PATH", "CMake Project Templates Path", getFieldEditorParent());
+		templateDirEditor.setPreferenceName(Activator.PREF_STORE_TEMPLATES_KEY);
+		templateDirEditor.load();
+		
 		addField(toolchainsDirEditor);
 		addField(moduleDirEditor);
+		addField(templateDirEditor);
 		
 		toolchainsDirEditor.setPropertyChangeListener(this);
 		moduleDirEditor.setPropertyChangeListener(this);
+		templateDirEditor.setPropertyChangeListener(this);
 	}
 	
 	

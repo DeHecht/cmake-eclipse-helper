@@ -1,10 +1,10 @@
 package nl.usetechnology.cmake;
 
-import nl.usetechnology.cmake.event.CMakeProjectResourceChangeListener;
-
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.IStartup;
+
+import nl.usetechnology.cmake.event.CMakeProjectResourceChangeListener;
 
 public class StartupHandler implements IStartup {
 

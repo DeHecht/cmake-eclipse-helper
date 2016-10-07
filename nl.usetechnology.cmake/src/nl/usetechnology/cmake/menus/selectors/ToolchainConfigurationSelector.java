@@ -1,11 +1,11 @@
 package nl.usetechnology.cmake.menus.selectors;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.swt.widgets.MenuItem;
+
 import nl.usetechnology.cmake.ProjectSettingsAccessor;
 import nl.usetechnology.cmake.menus.MenuItemBuilder;
 import nl.usetechnology.cmake.menus.MenuItemPostProcessor;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.widgets.MenuItem;
 
 public class ToolchainConfigurationSelector implements MenuItemPostProcessor {
 

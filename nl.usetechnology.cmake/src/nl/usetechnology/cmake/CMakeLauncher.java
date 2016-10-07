@@ -8,9 +8,9 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.usetechnology.cmake.helper.FileContentIO;
-import nl.usetechnology.cmake.helper.PluginDataIO;
-
+import org.eclipse.cdt.core.CCorePlugin;
+import org.eclipse.cdt.core.model.CoreModel;
+import org.eclipse.cdt.core.model.ICProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -33,6 +33,9 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
+
+import nl.usetechnology.cmake.helper.FileContentIO;
+import nl.usetechnology.cmake.helper.PluginDataIO;
 
 
 public class CMakeLauncher {
@@ -100,7 +103,7 @@ public class CMakeLauncher {
 			
 			Runtime runtime = Runtime.getRuntime();
 			
-			String cmdLine = sb.toString();
+			final String cmdLine = sb.toString();
 			Process process = null;
 			if (Platform.getOS().equals(Platform.OS_WIN32)) {
 				process = runtime.exec(new String[]{"cmd", "/C", cmdLine}, null, projectLocation);
@@ -110,8 +113,8 @@ public class CMakeLauncher {
 			}
 			
 			int exitVal = -1;
-			StreamGobbler errordataReader = new StreamGobbler(process.getErrorStream());
-			StreamGobbler outputdataReader = new StreamGobbler(process.getInputStream());
+			final StreamGobbler errordataReader = new StreamGobbler(process.getErrorStream());
+			final StreamGobbler outputdataReader = new StreamGobbler(process.getInputStream());
 			errordataReader.start();
 			outputdataReader.start();
 			try {
@@ -124,19 +127,25 @@ public class CMakeLauncher {
 			
 			MessageConsole myConsole = Activator.findConsole("CMake Output");
 			myConsole.clearConsole();
-			MessageConsoleStream out = myConsole.newMessageStream();
-			MessageConsoleStream err = myConsole.newMessageStream();
+			final MessageConsoleStream out = myConsole.newMessageStream();
+			final MessageConsoleStream err = myConsole.newMessageStream();
 			
-			out.setColor(black);
-			out.println(cmdLine);
-			out.println(outputdataReader.getOutput().toString());
+			Display.getDefault().asyncExec(new Runnable() {
+				
+				@Override
+				public void run() {
+					out.setColor(black);
+					out.println(cmdLine);
+					out.println(outputdataReader.getOutput().toString());
+					String errorOut = errordataReader.getOutput().toString();
+					errorOut = filterErrorOutput(errorOut);
+					if(!errorOut.isEmpty()) {
+						err.setColor(red);
+						err.println(errorOut);
+					}
+				}
+			});
 			
-			String errorOut = errordataReader.getOutput().toString();
-			errorOut = filterErrorOutput(errorOut);
-			if(!errorOut.isEmpty()) {
-				err.setColor(red);
-				err.println(errorOut);
-			}
 			Activator.showConsole("CMake Output");
 			
 			return exitVal == 0;
@@ -189,6 +198,9 @@ public class CMakeLauncher {
 		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		// now relink symbolic links
 		copyProjectFiles(project);
+		
+		ICProject cproject = CoreModel.getDefault().create(project);
+		CCorePlugin.getIndexManager().reindex(cproject);
 	}
 	
 	public void changeArchitecture(final IProject project, final String architecture) throws CoreException {
@@ -217,6 +229,9 @@ public class CMakeLauncher {
 		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		copyProjectFiles(project, architecture);
 		ProjectSettingsAccessor.removeAbsoluteProjectPath(project);
+
+		ICProject cproject = CoreModel.getDefault().create(project);
+		CCorePlugin.getIndexManager().reindex(cproject);
 	}
 	
 	public void changeBuildType(final IProject project, final String buildType) throws CoreException {

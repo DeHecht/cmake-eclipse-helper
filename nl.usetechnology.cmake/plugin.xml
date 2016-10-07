@@ -11,6 +11,22 @@
          </run>
       </runtime>
    </extension>
+      <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="nl.usetechnology.cmake.create.category"
+            name="USE Technologies">
+      </category>
+      <wizard
+            canFinishEarly="true"
+            category="nl.usetechnology.cmake.create.category"
+            class="nl.usetechnology.cmake.wizards.CMakeWizard"
+            icon="icons/uil.png"
+            id="nl.usetechnology.cmake.wizard2"
+            name="USE CMake Project"
+            project="true">
+      </wizard>
+   </extension>
    <extension
          point="org.eclipse.ui.startup">
       <startup

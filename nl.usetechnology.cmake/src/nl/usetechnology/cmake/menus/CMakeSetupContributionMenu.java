@@ -1,9 +1,9 @@
 package nl.usetechnology.cmake.menus;
 
-import nl.usetechnology.cmake.menus.listeners.SetupCMakeProjectSelectionListener;
-
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.swt.widgets.Menu;
+
+import nl.usetechnology.cmake.menus.listeners.SetupCMakeProjectSelectionListener;
 
 public class CMakeSetupContributionMenu extends ContributionItem {
 

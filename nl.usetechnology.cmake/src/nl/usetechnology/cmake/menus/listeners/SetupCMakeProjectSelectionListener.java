@@ -1,12 +1,12 @@
 package nl.usetechnology.cmake.menus.listeners;
 
-import nl.usetechnology.cmake.CMakeLauncher;
-import nl.usetechnology.cmake.CMakeNature;
-import nl.usetechnology.cmake.menus.ProjectExplorerExtensionContributionFactory;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+
+import nl.usetechnology.cmake.CMakeLauncher;
+import nl.usetechnology.cmake.CMakeNature;
+import nl.usetechnology.cmake.menus.ProjectExplorerExtensionContributionFactory;
 
 public class SetupCMakeProjectSelectionListener extends SelectionAdapter {
 

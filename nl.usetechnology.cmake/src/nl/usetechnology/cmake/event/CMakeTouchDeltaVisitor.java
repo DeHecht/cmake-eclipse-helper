@@ -1,13 +1,8 @@
 package nl.usetechnology.cmake.event;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import nl.usetechnology.cmake.Activator;
-import nl.usetechnology.cmake.CMakeNature;
-import nl.usetechnology.cmake.helper.FileContentIO;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -21,6 +16,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+
+import nl.usetechnology.cmake.Activator;
+import nl.usetechnology.cmake.CMakeNature;
+import nl.usetechnology.cmake.helper.FileContentIO;
 
 public class CMakeTouchDeltaVisitor extends AbstractCMakeResourceDeltaVisitor {
 	

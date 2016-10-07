@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import nl.usetechnology.cmake.helper.PluginDataIO;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+
+import nl.usetechnology.cmake.helper.PluginDataIO;
 
 public class ProjectSettingsAccessor {
 
