@@ -35,7 +35,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_BUILD_SYS_NINJA_VALUE = "Eclipse CDT4 - Ninja";
 	public static final String PREF_STORE_MAKE_ARGS_DEFAULT = "-j" + Runtime.getRuntime().availableProcessors();
 	public static final String PREF_STORE_CMAKE_ARGS_DEFAULT = "";
-	public static final String PREF_STORE_BUILD_CONF_DEFAULT = "Debug;Release;RelWithDebugInfo;MinSizeRel";
+	public static final String PREF_STORE_BUILD_CONF_DEFAULT = "Debug" + File.pathSeparator + "Release" + File.pathSeparator + "RelWithDebugInfo" + File.pathSeparator + "MinSizeRel";
 		
 	// The shared instance
 	private static Activator plugin;
