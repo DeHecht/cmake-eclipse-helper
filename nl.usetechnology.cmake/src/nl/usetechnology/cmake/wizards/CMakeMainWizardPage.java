@@ -44,6 +44,7 @@ public class CMakeMainWizardPage extends WizardNewProjectCreationPage {
 		super(pageName);
 	}
 
+	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		Dialog.applyDialogFont(getControl());
@@ -118,6 +119,10 @@ public class CMakeMainWizardPage extends WizardNewProjectCreationPage {
 		List<DirectoryEntry> categories = new ArrayList<>();
 		
 		String url = Activator.getDefault().getPreferenceStore().getString(Activator.PREF_STORE_TEMPLATES_KEY);
+		if ( url == null || url.isEmpty() ) {
+			return categories;
+		}
+		
 		File baseDirectory = new File(url);
 		File[] files = baseDirectory.listFiles(new FilenameFilter() {
 			

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -98,9 +100,39 @@ public class CMakeLauncher {
 			return this;
 		}
 		
+		boolean execute(StringBuilder out, StringBuilder err) throws IOException {
+			Runtime runtime = Runtime.getRuntime();
+
+			final String cmdLine = sb.toString();
+			Process process = null;
+			if (Platform.getOS().equals(Platform.OS_WIN32)) {
+				process = runtime.exec(new String[]{"cmd", "/C", cmdLine}, null);
+			} else {
+				System.out.println(cmdLine);
+				process = runtime.exec(new String[]{"sh", "-c", cmdLine}, null);
+			}
+			
+			int exitVal = -1;
+			final StreamGobbler errordataReader = new StreamGobbler(process.getErrorStream());
+			final StreamGobbler outputdataReader = new StreamGobbler(process.getInputStream());
+			errordataReader.start();
+			outputdataReader.start();
+			try {
+				exitVal = process.waitFor();
+				errordataReader.join();
+				outputdataReader.join();
+			} catch (InterruptedException e) {
+				Activator.logError("Error executing cmake", e);
+			}
+			
+			out.append(outputdataReader.getOutput());
+			err.append(errordataReader.getOutput());
+			
+			return exitVal == 0;
+		}
+		
 		boolean execute(IProject project) throws IOException {
 			File projectLocation = project.getLocation().makeAbsolute().toFile();
-			
 			Runtime runtime = Runtime.getRuntime();
 			
 			final String cmdLine = sb.toString();
@@ -400,5 +432,60 @@ public class CMakeLauncher {
 	private String getToolchainFilePath(String architecture) {
 		return PluginDataIO.getToolchainPathForArchitecture(architecture).toString();
 	}
+
+
+	public List<String> retrieveCMakeGenerators() {
+		ArrayList<String> eclipseGenerators = new ArrayList<>();
+		CommandBuilder builder = new CommandBuilder();
+		builder.append("-G");
+		StringBuilder stdOut = new StringBuilder();
+		StringBuilder errOut = new StringBuilder();
+		try {
+			builder.execute(stdOut, errOut);
+			System.out.println("stdout: " + stdOut);
+			System.out.println("stderr: " + errOut);
+			
+			StringBuilder buff = new StringBuilder();
+			boolean capture = false;
+			int leadingSpaces = -1;
+
+			for ( String line : errOut.toString().split("\n") ) {
+				if (!capture) {
+					if ( line.startsWith("Generators") ) {
+						capture = true;
+					}
+					continue;
+				}
+				if ( leadingSpaces == -1 ) {
+					leadingSpaces = 0;
+					while( line.charAt(leadingSpaces) == ' ')
+					{
+						++leadingSpaces;
+					}
+				}
+				if ( line.length() > leadingSpaces && line.charAt(leadingSpaces + 1) != ' ' && buff.length() > 0) {
+					appendGenerator(eclipseGenerators, buff);
+				}
+				buff.append(line);
+			}
+			appendGenerator(eclipseGenerators, buff);
+
+		} catch (IOException e) {
+			// expect this to not happen
+		}
+		return eclipseGenerators;
+		
+	}
 	
+	private static Pattern eclipseGeneratorPattern = Pattern.compile("\\s*(Eclipse[^=]+)=.*");
+	
+	private static void appendGenerator(ArrayList<String> eclipseGenerators, StringBuilder buff) {
+		String mergedGeneratorLine = buff.toString().replaceAll("\\n\\r", "").trim();
+		Matcher m = eclipseGeneratorPattern.matcher(mergedGeneratorLine);
+		if ( m.matches() ) {
+			eclipseGenerators.add(m.group(1).trim());
+		}
+		buff.setLength(0);
+	}
+
 }

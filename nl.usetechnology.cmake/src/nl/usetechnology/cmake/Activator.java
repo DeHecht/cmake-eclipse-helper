@@ -31,8 +31,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_DEFAULT_TOOLCHAIN = "USE_CMAKE_DEFAULT_TC";
 	public static final String PREF_STORE_BUILD_CONF = "USE_CMAKE_BUILD_CONFIG";
 	
-	public static final String PREF_STORE_BUILD_SYS_MAKE_VALUE = "Eclipse CDT4 - Unix Makefiles";
-	public static final String PREF_STORE_BUILD_SYS_NINJA_VALUE = "Eclipse CDT4 - Ninja";
+	public static final String PREF_STORE_BUILD_SYS_DEFAULT = "Eclipse CDT4 - Unix Makefiles";
 	public static final String PREF_STORE_MAKE_ARGS_DEFAULT = "-j" + Runtime.getRuntime().availableProcessors();
 	public static final String PREF_STORE_CMAKE_ARGS_DEFAULT = "";
 	public static final String PREF_STORE_BUILD_CONF_DEFAULT = "Debug" + File.pathSeparator + "Release" + File.pathSeparator + "RelWithDebugInfo" + File.pathSeparator + "MinSizeRel";
@@ -44,7 +43,7 @@ public class Activator extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public Activator() {
-		getPreferenceStore().setDefault(PREF_STORE_BUILD_SYS, PREF_STORE_BUILD_SYS_MAKE_VALUE);
+		getPreferenceStore().setDefault(PREF_STORE_BUILD_SYS, PREF_STORE_BUILD_SYS_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_MAKE_ARGS, PREF_STORE_MAKE_ARGS_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_CMAKE_ARGS, PREF_STORE_CMAKE_ARGS_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_BUILD_CONF, PREF_STORE_BUILD_CONF_DEFAULT);

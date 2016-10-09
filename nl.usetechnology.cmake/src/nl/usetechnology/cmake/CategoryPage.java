@@ -28,6 +28,9 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 
 	private ListEditor defaultBuildtypes;
 	
+	private CMakeLauncher launcher = new CMakeLauncher();
+
+	
 	public CategoryPage() {
 	}
 
@@ -41,7 +44,15 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void createFieldEditors() {
-		buildEnvironmentEditor = new ComboFieldEditor("BUILD_SYS", "Build System", new String[][]{{"Make", Activator.PREF_STORE_BUILD_SYS_MAKE_VALUE},{"Ninja", Activator.PREF_STORE_BUILD_SYS_NINJA_VALUE}}, getFieldEditorParent());
+		List<String> cmakeGenerators = launcher.retrieveCMakeGenerators();
+		String[][] generators = new String[cmakeGenerators.size()][];
+		int i = 0;
+		for( String generator : cmakeGenerators ) {
+			String name = generator.replaceAll("[^-]+-(.*)", "$1").trim();
+			generators[i++] = new String[]{name,generator};
+		}
+		
+		buildEnvironmentEditor = new ComboFieldEditor("BUILD_SYS", "Build System", generators, getFieldEditorParent());
 		buildEnvironmentEditor.setPreferenceName(Activator.PREF_STORE_BUILD_SYS);
 		buildEnvironmentEditor.load();
 		
