@@ -11,6 +11,8 @@ Internally, it uses CMakes "Eclipse Generator". So your projects do not have to 
  * Support for adding/removing source files and updating the globs (by automatically touching the `CMakeLists.txt` file).
  * It provides simple context menus for your project to run the CMake generator and to tag "generated" files (like the `.project` and `.cproject`) so you won't accidentally spam your version control system with changes on these files.
 
+see https://github.com/USESystemEngineeringBV/cmake-eclipse-helper/wiki for more information about the plugin.
+
 ## How to install?
 
 Our eclipse update-site is available at: http://www.cmake-helper.eu/releases/1.0
@@ -20,6 +22,8 @@ Our eclipse update-site is available at: http://www.cmake-helper.eu/releases/1.0
 You require to configure the path of the directory, where the toolchain files are stored. The parser uses the following pattern: `toolchain.<name>.cmake`
 
 The "name" will be picked up by the toolchain context menu. 
+
+See https://github.com/USESystemEngineeringBV/cmake-eclipse-helper/wiki/HowToAddToolchain for more information about how to manage toolchains.
 
 ## How to use the plug-in?
 
@@ -38,3 +42,5 @@ If you have a arm toolchain file and you want to switch from `x86_64` to the `ar
  3. Build your project
 
 You will find your binaries in the *"bin/name-of-your-arm-toolchain"* directory (in case you did not specify a different output directory within your `CMakeLists.txt`).
+
+See https://github.com/USESystemEngineeringBV/cmake-eclipse-helper/wiki/HowToUse for more information about how to use the plugin.
