@@ -437,23 +437,24 @@ public class CMakeLauncher {
 	public List<String> retrieveCMakeGenerators() {
 		ArrayList<String> eclipseGenerators = new ArrayList<>();
 		CommandBuilder builder = new CommandBuilder();
-		builder.append("-G");
+		builder.append("--help");
 		StringBuilder stdOut = new StringBuilder();
 		StringBuilder errOut = new StringBuilder();
 		try {
 			builder.execute(stdOut, errOut);
-			System.out.println("stdout: " + stdOut);
-			System.out.println("stderr: " + errOut);
 			
 			StringBuilder buff = new StringBuilder();
 			boolean capture = false;
 			int leadingSpaces = -1;
 
-			for ( String line : errOut.toString().split("\n") ) {
+			for ( String line : stdOut.toString().split("\n") ) {
 				if (!capture) {
 					if ( line.startsWith("Generators") ) {
 						capture = true;
 					}
+					continue;
+				}
+				if (!line.matches("\\s+.*")) {
 					continue;
 				}
 				if ( leadingSpaces == -1 ) {
