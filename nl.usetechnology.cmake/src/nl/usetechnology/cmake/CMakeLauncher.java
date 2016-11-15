@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import nl.usetechnology.cmake.helper.FileContentIO;
+import nl.usetechnology.cmake.helper.PluginDataIO;
+
 import org.eclipse.cdt.core.CCorePlugin;
 import org.eclipse.cdt.core.model.CoreModel;
 import org.eclipse.cdt.core.model.ICProject;
@@ -35,9 +38,6 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
-
-import nl.usetechnology.cmake.helper.FileContentIO;
-import nl.usetechnology.cmake.helper.PluginDataIO;
 
 
 public class CMakeLauncher {
@@ -93,7 +93,15 @@ public class CMakeLauncher {
 	
 	
 	private class CommandBuilder {
-		private StringBuilder sb = new StringBuilder("cmake");
+		private StringBuilder sb = new StringBuilder();
+		
+		public CommandBuilder() {
+			if( Activator.getCMakePath().isEmpty()) {
+				sb.append("cmake");
+			} else {
+				sb.append(Activator.getCMakePath());
+			}
+		}
 		
 		CommandBuilder append(String string) {
 			sb.append(' ').append(string);

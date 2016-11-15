@@ -7,6 +7,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
@@ -25,6 +27,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_TOOLCHAINS_KEY = "USE_CMAKE_TOOLCHAIN_PATH";
 	public static final String PREF_STORE_MODULES_KEY = "USE_CMAKE_MODULE_PATH";
 	public static final String PREF_STORE_TEMPLATES_KEY = "USE_CMAKE_TEMPLATES_PATH";
+	public static final String PREF_STORE_CMAKE_PATH = "USE_CMAKE_PATH";
 	public static final String PREF_STORE_BUILD_SYS = "USE_CMAKE_BUILD_SYSTEM";
 	public static final String PREF_STORE_MAKE_ARGS = "USE_CMAKE_MAKE_ARGS";
 	public static final String PREF_STORE_CMAKE_ARGS = "USE_CMAKE_CMAKE_ARGS";
@@ -35,6 +38,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_MAKE_ARGS_DEFAULT = "-j" + Runtime.getRuntime().availableProcessors();
 	public static final String PREF_STORE_CMAKE_ARGS_DEFAULT = "";
 	public static final String PREF_STORE_BUILD_CONF_DEFAULT = "Debug" + File.pathSeparator + "Release" + File.pathSeparator + "RelWithDebugInfo" + File.pathSeparator + "MinSizeRel";
+	public static final String PREF_STORE_CMAKE_PATH_DEFAULT = "";
 		
 	// The shared instance
 	private static Activator plugin;
@@ -47,6 +51,7 @@ public class Activator extends AbstractUIPlugin {
 		getPreferenceStore().setDefault(PREF_STORE_MAKE_ARGS, PREF_STORE_MAKE_ARGS_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_CMAKE_ARGS, PREF_STORE_CMAKE_ARGS_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_BUILD_CONF, PREF_STORE_BUILD_CONF_DEFAULT);
+		getPreferenceStore().setDefault(PREF_STORE_CMAKE_PATH, PREF_STORE_CMAKE_PATH_DEFAULT);
 	}
 
 	/*
@@ -131,6 +136,16 @@ public class Activator extends AbstractUIPlugin {
 		conMan.showConsoleView(console);
 	}
 
+	private static String replacePathVariables(String path) {
+		VariablesPlugin variablesPlugin = VariablesPlugin.getDefault();
+		IStringVariableManager manager = variablesPlugin.getStringVariableManager();
+		try {
+			return manager.performStringSubstitution(path, false);
+		} catch (CoreException e) {
+			return path;
+		}
+	}
+	
 	public static String getBuildSystemString() {
 		return getDefault().getPreferenceStore().getString(PREF_STORE_BUILD_SYS);
 	}
@@ -145,6 +160,22 @@ public class Activator extends AbstractUIPlugin {
 
 	public static String getDefaultToolchain() {
 		return getDefault().getPreferenceStore().getString(PREF_STORE_DEFAULT_TOOLCHAIN);
+	}
+	
+	public static String getCMakeModulesPath() {
+		return replacePathVariables(getDefault().getPreferenceStore().getString(PREF_STORE_MODULES_KEY));
+	}
+	
+	public static String getToolchainPath() {
+		return replacePathVariables(getDefault().getPreferenceStore().getString(PREF_STORE_TOOLCHAINS_KEY));
+	}
+
+	public static String getTemplatesPath() {
+		return replacePathVariables(getDefault().getPreferenceStore().getString(PREF_STORE_TEMPLATES_KEY));
+	}
+
+	public static String getCMakePath() {
+		return replacePathVariables(getDefault().getPreferenceStore().getString(PREF_STORE_CMAKE_PATH));
 	}
 	
 	public static List<String> getBuildConfigurations() {

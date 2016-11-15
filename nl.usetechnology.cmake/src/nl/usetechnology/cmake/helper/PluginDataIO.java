@@ -55,7 +55,7 @@ public class PluginDataIO {
 	}
 	
 	public static Path getPathToToolchains() {
-		String url = Activator.getDefault().getPreferenceStore().getString(Activator.PREF_STORE_TOOLCHAINS_KEY);
+		String url = Activator.getToolchainPath();
 		if (url == null) {
 			return new File("").toPath();
 		}
@@ -63,7 +63,7 @@ public class PluginDataIO {
 	}
 	
 	public static Path getPathToModules() {
-		String url = Activator.getDefault().getPreferenceStore().getString(Activator.PREF_STORE_MODULES_KEY);
+		String url = Activator.getCMakeModulesPath();
 		if (url == null) {
 			return new File("").toPath();
 		}

@@ -118,7 +118,7 @@ public class CMakeMainWizardPage extends WizardNewProjectCreationPage {
 		
 		List<DirectoryEntry> categories = new ArrayList<>();
 		
-		String url = Activator.getDefault().getPreferenceStore().getString(Activator.PREF_STORE_TEMPLATES_KEY);
+		String url = Activator.getTemplatesPath();
 		if ( url == null || url.isEmpty() ) {
 			return categories;
 		}
