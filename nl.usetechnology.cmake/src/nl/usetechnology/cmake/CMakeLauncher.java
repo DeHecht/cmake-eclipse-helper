@@ -74,12 +74,6 @@ public class CMakeLauncher {
 	
 	private static final String SETUP_MODULE_PATH = "-DCMAKE_MODULE_PATH=\"$PATH_TO_MODULES$\"";
 
-	private static final String ARCH_BIN_DIR = PluginDataIO.BIN_DIR + File.separator + "$ARCH$";
-	
-	private static final String SETUP_BIN_DIR = "-H. -B" + ARCH_BIN_DIR + " -DCMAKE_TOOLCHAIN_FILE=\"$PATH_TO_TOOLCHAIN_FILE$\" -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=\"-C " + ARCH_BIN_DIR + " $MAKE_ARGS$\"";
-
-	private static final String SETUP_BIN_DIR_NO_TOOLCHAIN = "-H. -B"+ARCH_BIN_DIR+" -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=\"-C " + ARCH_BIN_DIR + " $MAKE_ARGS$\"";
-
 	private static final String CMAKE_BUILD_TYPE = "-DCMAKE_BUILD_TYPE=$BUILDTYPE$";
 
 	private static final Color black = new Color(Display.getCurrent(), 0, 0, 0);
@@ -91,6 +85,17 @@ public class CMakeLauncher {
 		return launcher;
 	}
 	
+	private String getArchBinDir() {
+		return PluginDataIO.getBinDirectory() + File.separator + "$ARCH$";
+	}
+	
+	private String getSetupBinDir() {
+		return "-H. -B" + getArchBinDir() + " -DCMAKE_TOOLCHAIN_FILE=\"$PATH_TO_TOOLCHAIN_FILE$\" -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=\"-C " + getArchBinDir() + " $MAKE_ARGS$\"";
+	}
+
+	private String getSetupBinDirNoToolchain() {
+		return "-H. -B" + getArchBinDir() + " -DCMAKE_ECLIPSE_MAKE_ARGUMENTS=\"-C " + getArchBinDir() + " $MAKE_ARGS$\"";
+	}
 	
 	private class CommandBuilder {
 		private StringBuilder sb = new StringBuilder();
@@ -330,7 +335,7 @@ public class CMakeLauncher {
 	
 	private void appendArchitectureVariables(CommandBuilder builder, String architecture) {
 		if(PluginDataIO.getToolchainArchitectures().size() == 0) {
-			String parameter = batchReplace(SETUP_BIN_DIR_NO_TOOLCHAIN, new String[]{"ARCH", "MAKE_ARGS"}
+			String parameter = batchReplace(getSetupBinDirNoToolchain(), new String[]{"ARCH", "MAKE_ARGS"}
 			, new String[]{architecture, Activator.getMakeArgs()});
 			builder.append(parameter);
 		} else {
@@ -338,7 +343,7 @@ public class CMakeLauncher {
 				System.err.println("FIXME: toolchain for architecture NOT available! (" + architecture +")");
 				return; // FIXME: throw CoreException?
 			}
-			String parameter = batchReplace(SETUP_BIN_DIR, new String[]{"ARCH", "PATH_TO_TOOLCHAIN_FILE", "MAKE_ARGS"},
+			String parameter = batchReplace(getSetupBinDir(), new String[]{"ARCH", "PATH_TO_TOOLCHAIN_FILE", "MAKE_ARGS"},
 					new String[]{architecture, getToolchainFilePath(architecture), Activator.getMakeArgs()});
 			builder.append(parameter);
 		}
@@ -381,7 +386,7 @@ public class CMakeLauncher {
 	}
 
 	private void copyProjectFiles(IProject project, String architecture) {
-		IPath binDir = new Path(batchReplace(ARCH_BIN_DIR, new String[]{"ARCH"}, new String[]{architecture}));
+		IPath binDir = new Path(batchReplace(getArchBinDir(), new String[]{"ARCH"}, new String[]{architecture}));
 		String fileNamesToCopy[] = new String[] {
 				".project",
 				".cproject"

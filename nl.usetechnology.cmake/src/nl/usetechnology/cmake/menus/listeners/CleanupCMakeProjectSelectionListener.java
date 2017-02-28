@@ -19,7 +19,7 @@ public class CleanupCMakeProjectSelectionListener extends SelectionAdapter {
 	@Override
 	public void widgetSelected(SelectionEvent e) {
 		IProject project = ProjectExplorerExtensionContributionFactory.retrieveSelectedProject();
-		IFolder binDir = project.getFolder(PluginDataIO.BIN_DIR);
+		IFolder binDir = project.getFolder(PluginDataIO.getBinDirectory());
 		try {
 			binDir.delete(true, null);
 			// delete all natures

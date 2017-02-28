@@ -18,9 +18,6 @@ import org.eclipse.swt.widgets.Display;
 import nl.usetechnology.cmake.Activator;
 
 public class PluginDataIO {
-	public final static String BIN_DIR = "bin";
-	//public static Path DATA_DIRECTORY;
-
 	public static Pattern toolchainPattern = Pattern.compile("toolchain\\.(.+)\\.cmake", Pattern.CASE_INSENSITIVE);
 	
     public static List<String> fileList(Path directory) {
@@ -34,8 +31,12 @@ public class PluginDataIO {
         return fileNames;
     }
     
+	public static String getBinDirectory() {
+		return Activator.getBinPath();
+	}
+	
 	public static Path getDataDirectory() {
-		String url = Activator.getDefault().getPreferenceStore().getString("USE_CMAKE_PATH");
+		String url = Activator.getCMakePath();
 		if (url == null)
 		{
 			// create a dialog with ok and cancel buttons and a question icon

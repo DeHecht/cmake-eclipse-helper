@@ -1,5 +1,7 @@
 package nl.usetechnology.cmake;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
@@ -23,19 +25,26 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 		public boolean doCheckState() {
 			VariablesPlugin variablesPlugin = VariablesPlugin.getDefault();
 			
+			String value = getStringValue();
+			
 			IStringVariableManager manager = variablesPlugin.getStringVariableManager();
 			// check if there are substitutions
 			String result;
 			try {
-				result = manager.performStringSubstitution(getStringValue(), false);
+				result = manager.performStringSubstitution(value, false);
 				if(!result.equals(getStringValue())) {
 					// string substitution present ... field editor cannot validate the value.
 					return true;
 				}
 			} catch (CoreException e) {
-				e.printStackTrace();
+				// replacement failed (but there are replaceable variables present)
+				return true;
 			}
-			return super.doCheckState();
+			
+			if ( new File(value).isAbsolute()) {
+				return super.doCheckState();
+			}
+			return true;
 		}
 	}
 	
@@ -71,7 +80,9 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 	private DirectoryFieldEditor moduleDirEditor;
 
 	private DirectoryFieldEditor templateDirEditor;
-	
+
+	private DirectoryFieldEditor binaryOutputDirEditor;
+
 	private FileFieldEditor cmakeFileEditor;
 
 	public WorkbenchPreferencePage() {
@@ -104,15 +115,21 @@ public class WorkbenchPreferencePage extends FieldEditorPreferencePage implement
 		cmakeFileEditor.setPreferenceName(Activator.PREF_STORE_CMAKE_PATH);
 		cmakeFileEditor.load();
 		
+		binaryOutputDirEditor = new SubstitutionalDirectoryFieldEditor("CMAKE_BIN_PATH", "Projects (relative) bin path", getFieldEditorParent());
+		binaryOutputDirEditor.setPreferenceName(Activator.PREF_STORE_BIN_PATH);
+		binaryOutputDirEditor.load();
+		
 		addField(toolchainsDirEditor);
 		addField(moduleDirEditor);
 		addField(templateDirEditor);
 		addField(cmakeFileEditor);
+		addField(binaryOutputDirEditor);
 		
 		toolchainsDirEditor.setPropertyChangeListener(this);
 		moduleDirEditor.setPropertyChangeListener(this);
 		templateDirEditor.setPropertyChangeListener(this);
 		cmakeFileEditor.setPropertyChangeListener(this);
+		binaryOutputDirEditor.setPropertyChangeListener(this);
 	}
 	
 }

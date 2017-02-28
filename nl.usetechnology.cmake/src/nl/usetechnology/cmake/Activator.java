@@ -28,6 +28,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_MODULES_KEY = "USE_CMAKE_MODULE_PATH";
 	public static final String PREF_STORE_TEMPLATES_KEY = "USE_CMAKE_TEMPLATES_PATH";
 	public static final String PREF_STORE_CMAKE_PATH = "USE_CMAKE_PATH";
+	public static final String PREF_STORE_BIN_PATH = "USE_CMAKE_BIN_PATH";
 	public static final String PREF_STORE_BUILD_SYS = "USE_CMAKE_BUILD_SYSTEM";
 	public static final String PREF_STORE_MAKE_ARGS = "USE_CMAKE_MAKE_ARGS";
 	public static final String PREF_STORE_CMAKE_ARGS = "USE_CMAKE_CMAKE_ARGS";
@@ -39,7 +40,8 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_CMAKE_ARGS_DEFAULT = "";
 	public static final String PREF_STORE_BUILD_CONF_DEFAULT = "Debug" + File.pathSeparator + "Release" + File.pathSeparator + "RelWithDebugInfo" + File.pathSeparator + "MinSizeRel";
 	public static final String PREF_STORE_CMAKE_PATH_DEFAULT = "";
-		
+	public static final String PREF_STORE_BIN_PATH_DEFAULT = "bin";
+	
 	// The shared instance
 	private static Activator plugin;
 	
@@ -52,6 +54,7 @@ public class Activator extends AbstractUIPlugin {
 		getPreferenceStore().setDefault(PREF_STORE_CMAKE_ARGS, PREF_STORE_CMAKE_ARGS_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_BUILD_CONF, PREF_STORE_BUILD_CONF_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_CMAKE_PATH, PREF_STORE_CMAKE_PATH_DEFAULT);
+		getPreferenceStore().setDefault(PREF_STORE_BIN_PATH, PREF_STORE_BIN_PATH_DEFAULT);
 	}
 
 	/*
@@ -176,6 +179,10 @@ public class Activator extends AbstractUIPlugin {
 
 	public static String getCMakePath() {
 		return replacePathVariables(getDefault().getPreferenceStore().getString(PREF_STORE_CMAKE_PATH));
+	}
+	
+	public static String getBinPath() {
+		return replacePathVariables(getDefault().getPreferenceStore().getString(PREF_STORE_BIN_PATH));
 	}
 	
 	public static List<String> getBuildConfigurations() {

@@ -43,6 +43,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.ide.undo.CreateProjectOperation;
 import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 
+import nl.usetechnology.cmake.Activator;
 import nl.usetechnology.cmake.CMakeLauncher;
 import nl.usetechnology.cmake.CMakeNature;
 import nl.usetechnology.cmake.wizards.CMakeMainWizardPage.DirectoryEntry;
@@ -141,6 +142,15 @@ public class CMakeWizard extends Wizard implements IWorkbenchWizard {
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 					StringBuilder sb = new StringBuilder();
 					
+					try {
+						String type = Files.probeContentType(file);
+						if (type != null && !type.startsWith("text")) {
+							return FileVisitResult.CONTINUE;
+						}
+					} catch (IOException e) {
+						Activator.logWarning("Unable to read out mime type of File" + file.toString());
+					}
+					
 					try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file.toFile())))) {
 						String line = null;
 						while ((line = br.readLine()) != null) {
@@ -168,7 +178,7 @@ public class CMakeWizard extends Wizard implements IWorkbenchWizard {
 				}
 			});
 		} catch (IOException e) {
-			e.printStackTrace();
+			Activator.logError("IOException has occurred", e);
 		}
 	}
 	

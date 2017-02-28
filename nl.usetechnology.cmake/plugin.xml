@@ -18,7 +18,7 @@
             name="USE Technologies">
       </category>
       <wizard
-            canFinishEarly="true"
+            canFinishEarly="false"
             category="nl.usetechnology.cmake.create.category"
             class="nl.usetechnology.cmake.wizards.CMakeWizard"
             icon="icons/uil.png"

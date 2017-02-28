@@ -60,7 +60,7 @@ public class ProjectSettingsAccessor {
 		String buildType = validBuildTypes.get(0); // Initialize with "valid" type
 		
 		String architecture = retrieveToolchain(project);
-		IFile cacheFile = getFileFromProject(project, PluginDataIO.BIN_DIR, architecture, "CMakeCache.txt");
+		IFile cacheFile = getFileFromProject(project, PluginDataIO.getBinDirectory(), architecture, "CMakeCache.txt");
 		try {
 			InputStream is = cacheFile.getContents(true);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
