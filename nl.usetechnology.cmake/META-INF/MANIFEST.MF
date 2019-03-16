@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: USE CMake Plugin
 Bundle-SymbolicName: nl.usetechnology.cmake;singleton:=true
-Bundle-Version: 1.0.8.qualifier
+Bundle-Version: 1.0.23.qualifier
 Bundle-Activator: nl.usetechnology.cmake.Activator
 Bundle-Vendor: USE Technologies BV.
 Require-Bundle: org.eclipse.core.expressions,

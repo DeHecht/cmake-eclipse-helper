@@ -32,6 +32,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_BUILD_SYS = "USE_CMAKE_BUILD_SYSTEM";
 	public static final String PREF_STORE_MAKE_ARGS = "USE_CMAKE_MAKE_ARGS";
 	public static final String PREF_STORE_CMAKE_ARGS = "USE_CMAKE_CMAKE_ARGS";
+	public static final String PREF_STORE_TOUCH_ARGS = "USE_CMAKE_CMAKE_TOUCH";
 	public static final String PREF_STORE_DEFAULT_TOOLCHAIN = "USE_CMAKE_DEFAULT_TC";
 	public static final String PREF_STORE_BUILD_CONF = "USE_CMAKE_BUILD_CONFIG";
 	
@@ -41,6 +42,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String PREF_STORE_BUILD_CONF_DEFAULT = "Debug" + File.pathSeparator + "Release" + File.pathSeparator + "RelWithDebugInfo" + File.pathSeparator + "MinSizeRel";
 	public static final String PREF_STORE_CMAKE_PATH_DEFAULT = "";
 	public static final String PREF_STORE_BIN_PATH_DEFAULT = "bin";
+	public static final boolean PREF_STORE_CMAKE_TOUCH_DEFAULT = true;
 	
 	// The shared instance
 	private static Activator plugin;
@@ -55,6 +57,7 @@ public class Activator extends AbstractUIPlugin {
 		getPreferenceStore().setDefault(PREF_STORE_BUILD_CONF, PREF_STORE_BUILD_CONF_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_CMAKE_PATH, PREF_STORE_CMAKE_PATH_DEFAULT);
 		getPreferenceStore().setDefault(PREF_STORE_BIN_PATH, PREF_STORE_BIN_PATH_DEFAULT);
+		getPreferenceStore().setDefault(PREF_STORE_TOUCH_ARGS, PREF_STORE_CMAKE_TOUCH_DEFAULT);
 	}
 
 	/*
@@ -159,6 +162,10 @@ public class Activator extends AbstractUIPlugin {
 
 	public static String getCmakeArgs() {
 		return getDefault().getPreferenceStore().getString(PREF_STORE_CMAKE_ARGS);
+	}
+
+	public static boolean isTouchFilesEnabled() {
+		return getDefault().getPreferenceStore().getBoolean(PREF_STORE_TOUCH_ARGS);
 	}
 
 	public static String getDefaultToolchain() {

@@ -86,7 +86,7 @@ public class CMakeLauncher {
 	}
 	
 	private String getArchBinDir() {
-		return PluginDataIO.getBinDirectory() + File.separator + "$ARCH$";
+		return PluginDataIO.getBinDirectory() + File.separator + "$ARCH$" + File.separator;
 	}
 	
 	private String getSetupBinDir() {
@@ -205,6 +205,7 @@ public class CMakeLauncher {
 					throws CoreException {
 				try {
 					doSetupProject(project, monitor);
+					checkDerivedResources(project, monitor);
 					return Status.OK_STATUS;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -213,6 +214,10 @@ public class CMakeLauncher {
 			}
 		};
 		job.schedule();
+	}
+
+	private void checkDerivedResources(IProject project, IProgressMonitor monitor) {
+		CMakeNature.assignDerivedToResources(project, monitor);
 	}
 
 	Pattern eclipseWarning = Pattern.compile("(.*)The build directory is a subdirectory.*which is a sibling of the source directory\\.(.*)", Pattern.DOTALL | Pattern.MULTILINE);
@@ -242,7 +247,7 @@ public class CMakeLauncher {
 		builder.execute(project);
 		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		// now relink symbolic links
-		copyProjectFiles(project);
+		copyProjectFiles(project, monitor);
 		
 		ICProject cproject = CoreModel.getDefault().create(project);
 		CCorePlugin.getIndexManager().reindex(cproject);
@@ -255,6 +260,7 @@ public class CMakeLauncher {
 					throws CoreException {
 				try {
 					doChangeArchitecture(project, architecture, monitor);
+					checkDerivedResources(project, monitor);
 					return Status.OK_STATUS;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -272,7 +278,7 @@ public class CMakeLauncher {
 		appendBuildTypeVariables(builder, ProjectSettingsAccessor.retrieveBuildType(project));
 		builder.execute(project);
 		project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-		copyProjectFiles(project, architecture);
+		copyProjectFiles(project, architecture, monitor);
 		ProjectSettingsAccessor.removeAbsoluteProjectPath(project);
 
 		ICProject cproject = CoreModel.getDefault().create(project);
@@ -286,6 +292,7 @@ public class CMakeLauncher {
 					throws CoreException {
 				try {
 					doChangeBuildType(project, buildType, monitor);
+					checkDerivedResources(project, monitor);
 					return Status.OK_STATUS;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -304,19 +311,6 @@ public class CMakeLauncher {
 		appendBuildTypeVariables(builder, buildType);
 		builder.execute(project);
 	}
-	
-	public void scheduleCopyProjectFiles(final IProject project){
-		WorkspaceJob job = new WorkspaceJob("Copy generated CMake Eclipse-Project files in " + project) {
-			@Override
-			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-				copyProjectFiles(project);
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
-
-	}
-	
 	
 	private void appendEclipseProjectSetup(CommandBuilder builder) {
 		String version = retrieveEclipseVersionString();
@@ -354,8 +348,8 @@ public class CMakeLauncher {
 		builder.append(parameter);
 	}
 
-	private void copyProjectFiles(IProject project) {
-		copyProjectFiles(project, ProjectSettingsAccessor.retrieveToolchain(project));
+	public void copyProjectFiles(IProject project, IProgressMonitor monitor) {
+		copyProjectFiles(project, ProjectSettingsAccessor.retrieveToolchain(project), monitor);
 	}
 
 	
@@ -385,7 +379,7 @@ public class CMakeLauncher {
 		return null;
 	}
 
-	private void copyProjectFiles(IProject project, String architecture) {
+	private void copyProjectFiles(IProject project, String architecture, IProgressMonitor monitor) {
 		IPath binDir = new Path(batchReplace(getArchBinDir(), new String[]{"ARCH"}, new String[]{architecture}));
 		String fileNamesToCopy[] = new String[] {
 				".project",
@@ -402,9 +396,9 @@ public class CMakeLauncher {
 			}
 			
 			if(destinationFile.exists()) {
-				copyFileContent(sourceFile, destinationFile);
+				copyFileContent(sourceFile, destinationFile, monitor);
 			} else {
-				copyFile(sourceFile, destinationFile);
+				copyFile(sourceFile, destinationFile, monitor);
 			}
 		}
 		ProjectSettingsAccessor.removeAbsoluteProjectPath(project);
@@ -412,19 +406,25 @@ public class CMakeLauncher {
 		CMakeNature.scheduleIntegrityCheck(project);
 	}
 	
-	private void copyFile(IFile source, IFile destination) {
+	private void copyFile(IFile source, IFile destination, IProgressMonitor monitor) {
 		try {
-			source.copy(destination.getFullPath(), true, null);
-			destination.refreshLocal(IResource.DEPTH_ZERO, null);
+			source.copy(destination.getFullPath(), true, monitor);
+			destination.refreshLocal(IResource.DEPTH_ZERO, monitor);
+			destination.setDerived(true, monitor);
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void copyFileContent(IFile source, IFile destination) {
+	private void copyFileContent(IFile source, IFile destination, IProgressMonitor monitor) {
 		try {
 			CharSequence content = FileContentIO.readFileContent(source);
-			FileContentIO.writeFileContent(destination, content, null);
+			CharSequence contentOld = FileContentIO.readFileContent(destination);
+			if (!content.toString().equals(contentOld.toString())) {
+				// Replace content only in case the content differs
+				FileContentIO.writeFileContent(destination, content, monitor);
+			}
+			destination.setDerived(true, monitor);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
