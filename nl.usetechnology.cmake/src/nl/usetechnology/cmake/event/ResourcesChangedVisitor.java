@@ -14,6 +14,7 @@ import nl.usetechnology.cmake.Activator;
 import nl.usetechnology.cmake.CMakeLauncher;
 import nl.usetechnology.cmake.CMakeNature;
 import nl.usetechnology.cmake.helper.FileContentIO;
+import nl.usetechnology.cmake.helper.PluginDataIO;
 
 public class ResourcesChangedVisitor extends AbstractCMakeResourceDeltaVisitor {
 
@@ -30,14 +31,21 @@ public class ResourcesChangedVisitor extends AbstractCMakeResourceDeltaVisitor {
 
 		if(isProject(resource) && CMakeNature.isCMakeProject((IProject)resource)) {
 			delta.accept(projectVisitor);
-			delta.accept(touchVisitor);
+			if (PluginDataIO.isTouchFilesEnabled()) {
+				delta.accept(touchVisitor);
+			}
 		}
 		
 		return isWorkspace(resource);
 	}
 
 	public void postProcess() {
-
+		
+		if (touchVisitor.getFiles().isEmpty() && projectVisitor.getProjectsToCopy().isEmpty()) {
+			// don't schedule a job when there is nothing to do!
+			return;
+		}
+		
 		WorkspaceJob job = new WorkspaceJob("Process changed resources") {
 
 			@Override
