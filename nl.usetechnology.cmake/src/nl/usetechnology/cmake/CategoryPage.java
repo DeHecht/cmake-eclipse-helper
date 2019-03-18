@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.eclipse.cdt.utils.Platform;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -23,6 +24,8 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 	private StringFieldEditor makeArgsEditor;
 
 	private StringFieldEditor cmakeArgsEditor;
+
+	private BooleanFieldEditor touchEditor;
 	
 	private ComboFieldEditor defaultToolchain;
 
@@ -64,6 +67,10 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 		cmakeArgsEditor.setPreferenceName(Activator.PREF_STORE_CMAKE_ARGS);
 		cmakeArgsEditor.load();
 
+		touchEditor = new BooleanFieldEditor("CMAKE_TOUCH", "Touch CMakeLists.txt when files are added/removed", getFieldEditorParent());
+		touchEditor.setPreferenceName(Activator.PREF_STORE_TOUCH_ARGS);
+		touchEditor.load();
+		
 		String[][] entryNamesAndValues = { { "Toolchain path invalid or not set.", Platform.getOSArch() } };
 		List<String> toolchains = PluginDataIO.getToolchainArchitectures();
 		if (!toolchains.isEmpty()) {
@@ -109,12 +116,14 @@ public class CategoryPage extends FieldEditorPreferencePage implements
 		addField(buildEnvironmentEditor);
 		addField(makeArgsEditor);
 		addField(cmakeArgsEditor);
+		addField(touchEditor);
 		addField(defaultToolchain);
 		addField(defaultBuildtypes);
 
 		buildEnvironmentEditor.setPropertyChangeListener(this);
 		makeArgsEditor.setPropertyChangeListener(this);
 		cmakeArgsEditor.setPropertyChangeListener(this);
+		touchEditor.setPropertyChangeListener(this);
 		defaultToolchain.setPropertyChangeListener(this);
 		defaultBuildtypes.setPropertyChangeListener(this);
 	}

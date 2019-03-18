@@ -71,6 +71,10 @@ public class PluginDataIO {
 		return new File(url).toPath();
 	}
 	
+	public static boolean isTouchFilesEnabled() {
+		return Activator.isTouchFilesEnabled();
+	}
+	
 	public static List<String> getToolchainArchitectures() {
 		Path pathToToolchains = getPathToToolchains();
 		if(pathToToolchains == null || !pathToToolchains.toFile().exists()) {

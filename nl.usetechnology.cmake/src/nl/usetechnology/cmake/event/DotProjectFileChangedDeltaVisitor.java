@@ -1,45 +1,48 @@
 package nl.usetechnology.cmake.event;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 
-import nl.usetechnology.cmake.CMakeLauncher;
-import nl.usetechnology.cmake.CMakeNature;
+import nl.usetechnology.cmake.helper.PluginDataIO;
 
 public class DotProjectFileChangedDeltaVisitor extends
 		AbstractCMakeResourceDeltaVisitor {
 
-	private CMakeLauncher launcher = CMakeLauncher.instance();
+	private Set<IProject> projectsToCopy = new HashSet<>();
 	
 	@Override
 	public boolean visit(IResourceDelta delta) throws CoreException {
 		IResource resource = delta.getResource();
-		switch(resource.getType()) {
-		case IResource.FOLDER:
-		case IResource.ROOT:
-			return true;
-		case IResource.PROJECT:
-			return CMakeNature.isCMakeProject((IProject)resource);
-		default:
-			break;
+		
+		if (resource.getType() == IResource.FOLDER) {
+			// only visit the binary directory and its sub directories
+			return !isProject(resource.getParent()) || resource.getName().equals(PluginDataIO.getBinDirectory());
 		}
-
-		IFile file = (IFile)resource;
-		if(".project".equals(file.getName())) {
-			// we have a project file
-			if(file.getParent().getType() != IResource.PROJECT) {
-				// it is a project file not positioned at project level
-				switch (delta.getFlags()) {
-				case IResourceDelta.CONTENT:
-				case IResourceDelta.REPLACED:
-					launcher.scheduleCopyProjectFiles(file.getProject());
-					return false;
+		if (resource.getType() == IResource.FILE) {
+			IFile file = (IFile)resource;
+			if(".project".equals(file.getName()) || ".cproject".equals(file.getName())) {
+				// we have a project file
+				if(file.getParent().getType() != IResource.PROJECT) {
+					// it is a project file not positioned at project level
+					switch (delta.getFlags()) {
+					case IResourceDelta.CONTENT:
+					case IResourceDelta.REPLACED:
+						projectsToCopy.add(file.getProject());
+						return false;
+					}
 				}
 			}
 		}
-		return true;
+		return isProject(resource);
+	}
+	
+	public Set<IProject> getProjectsToCopy() {
+		return projectsToCopy;
 	}
 }

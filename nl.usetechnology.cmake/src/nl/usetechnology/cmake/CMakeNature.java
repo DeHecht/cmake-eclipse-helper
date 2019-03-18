@@ -110,8 +110,6 @@ public class CMakeNature implements IProjectNature {
 	
 	private static List<String> derivedDirectories = Collections.unmodifiableList(Arrays.asList("bin", "build", "[Targets]", "[Subprojects]"));
 	
-	private static List<String> derivedFiles = Collections.unmodifiableList(Arrays.asList(".project", ".cproject"));
-	
 	public static void scheduleIntegrityCheck(final IProject project) {
 		
 		WorkspaceJob job = new WorkspaceJob("Check integrity of project " + project.getName()) {
@@ -130,41 +128,29 @@ public class CMakeNature implements IProjectNature {
 					Activator.logError("Unable to readout nature of project!", e);
 				}
 				
-				List<IResource> toBeDerived = new ArrayList<IResource>(derivedDirectories.size() + derivedFiles.size());
-				// Check the integrity of the project
-				for (String folder : derivedDirectories) {
-					IResource resource = project.getFolder(folder);
-					if(resource.exists() && !resource.isDerived()) {
-						toBeDerived.add(resource);
-					}
-				}
-				for (String file : derivedFiles) {
-					IResource resource = project.getFile(file);
-					if(resource.exists() && !resource.isDerived()) {
-						toBeDerived.add(resource);
-					}
-				}
-				if(!toBeDerived.isEmpty()) {
-					scheduleSetDerivedToResources(toBeDerived);
-				}
+				assignDerivedToResources(project, monitor);
 				return Status.OK_STATUS;
 			}
 		};
 		job.schedule();
 	}
-
-	private static void scheduleSetDerivedToResources(final List<IResource> toBeDerived) {
-		WorkspaceJob job = new WorkspaceJob("Mark resources as derived " + toBeDerived) {
-			@Override
-			public IStatus runInWorkspace(IProgressMonitor monitor)
-					throws CoreException {
-				for (IResource resource : toBeDerived) {
-					resource.setDerived(true, monitor);
-				}
-				return Status.OK_STATUS;
+	
+	public static void assignDerivedToResources(IProject project, IProgressMonitor monitor) {
+		List<IResource> toBeDerived = new ArrayList<IResource>(derivedDirectories.size());
+		
+		for (String folder : derivedDirectories) {
+			IResource resource = project.getFolder(folder);
+			if(resource.exists() && !resource.isDerived()) {
+				toBeDerived.add(resource);
 			}
-		};
-		job.schedule();
+		}
+		for (IResource resource : toBeDerived) {
+			try {
+				resource.setDerived(true, monitor);
+			} catch (CoreException e) {
+				Activator.logError("Unable to set " + resource + " to derived!");
+			}
+		}
 	}
 
 }
